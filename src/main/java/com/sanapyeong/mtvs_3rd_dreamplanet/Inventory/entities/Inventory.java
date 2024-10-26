@@ -30,7 +30,7 @@ public class Inventory extends EntityTimestamp {
     private Long playedPlanetId;
 
     // 저장 여부
-    private Boolean storedState;
+    private Boolean storedStatus;
 
     // 게시판에서 게시된 위치 (좌상단부터 1 ~ 우하단 n)
     private Long postedLocation;
