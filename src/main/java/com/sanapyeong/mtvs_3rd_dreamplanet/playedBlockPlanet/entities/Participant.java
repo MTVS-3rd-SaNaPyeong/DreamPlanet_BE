@@ -28,4 +28,8 @@ public class Participant {
     private User user;
 
 
+    public Participant(PlayedBlockPlanet playedBlockPlanet, User user) {
+        this.playedBlockPlanet = playedBlockPlanet;
+        this.user = user;
+    }
 }

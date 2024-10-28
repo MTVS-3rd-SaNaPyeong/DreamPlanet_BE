@@ -32,7 +32,7 @@ public class PlayedBlockPlanet extends EntityTimestamp {
     // Participant 엔티티에서 playedblockplanet이란 필드가 이 관계를 소유 중
     // 즉, Participant 클래스에 해당 필드가 있어야 하고, 그것이 ManyToOne과 같은 어노테이션을 통해 매핑되어야 함.
     // cascade를 통해서 부모 엔티티 삭제 시, 자식 엔티티도 모두 삭제
-    @OneToMany(mappedBy = "playedblockplanet", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "playedBlockPlanet", cascade = CascadeType.REMOVE)
     private Set<Participant> participants;
 
     // 이미지 생성을 위해 입력된 텍스트
@@ -46,4 +46,22 @@ public class PlayedBlockPlanet extends EntityTimestamp {
     // 완성 작품 이미지
     private String completedWork;
 
+    public PlayedBlockPlanet(String photonPlanetId, Set<Participant> participants) {
+        this.photonPlanetId = photonPlanetId;
+        this.participants = participants;
+    }
+
+    public PlayedBlockPlanet(PlayedBlockPlanet playedBlockPlanet) {
+        this.id = playedBlockPlanet.getId();
+        this.photonPlanetId = playedBlockPlanet.getPhotonPlanetId();
+        this.participants = playedBlockPlanet.getParticipants();
+        this.prompt = playedBlockPlanet.getPrompt();
+        this.colorDotImage = playedBlockPlanet.getColorDotImage();
+        this.blackAndWhiteDotImage = playedBlockPlanet.getBlackAndWhiteDotImage();
+        this.completedWork = playedBlockPlanet.getCompletedWork();
+    }
+
+    public PlayedBlockPlanet(String photonPlanetId) {
+        this.photonPlanetId = photonPlanetId;
+    }
 }

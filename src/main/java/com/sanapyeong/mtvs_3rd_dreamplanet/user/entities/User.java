@@ -30,4 +30,10 @@ public class User extends EntityTimestamp {
     // 유저 비밀번호 -> 해시함수 적용 필요
     private String loginPw;
 
+    public User(User user) {
+        this.id = user.getId();
+        this.nickname = user.getNickname();
+        this.loginId = user.getLoginId();
+        this.loginPw = user.getLoginPw();
+    }
 }
