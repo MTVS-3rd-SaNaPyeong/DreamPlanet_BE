@@ -34,4 +34,10 @@ public class Inventory extends EntityTimestamp {
 
     // 게시판에서 게시된 위치 (좌상단부터 1 ~ 우하단 n)
     private Long postedLocation;
+
+    public Inventory(PlanetType planetType, Long playedPlanetId, Boolean storedStatus) {
+        this.planetType = planetType;
+        this.playedPlanetId = playedPlanetId;
+        this.storedStatus = storedStatus;
+    }
 }
