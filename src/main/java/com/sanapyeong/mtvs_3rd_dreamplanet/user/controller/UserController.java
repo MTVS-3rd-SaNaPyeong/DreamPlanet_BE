@@ -110,13 +110,20 @@ public class UserController {
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request){
 
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+        Map<String, Object> responseMap = new HashMap<>();
+
         String authorizationHeader = request.getHeader("Authorization");
 
         if(authorizationHeader == null){
-            return null;
+            ResponseMessage responseMessage = new ResponseMessage(401, "로그인이 필요합니다.", responseMap);
+            return new ResponseEntity<>(responseMessage, headers, HttpStatus.UNAUTHORIZED);
         }
 
         userTokenStorage.removeToken(authorizationHeader);
-        return ResponseEntity.ok("로그아웃 성공");
+
+        ResponseMessage responseMessage = new ResponseMessage(200, "로그아웃 성공", responseMap);
+        return new ResponseEntity<>(responseMessage, headers, HttpStatus.OK);
     }
 }
