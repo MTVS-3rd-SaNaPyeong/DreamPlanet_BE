@@ -6,6 +6,8 @@ import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.repositories.InventoryRepos
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class InventoryService {
 
@@ -19,14 +21,20 @@ public class InventoryService {
     }
 
 
-    public void saveInventory(SaveInventoryDTO storedStatusInfo) {
+    public void saveInventory(Long userId, SaveInventoryDTO storedStatusInfo) {
 
         Inventory inventory = new Inventory(
+                userId,
                 storedStatusInfo.getPlanetType(),
                 storedStatusInfo.getPlayedPlanetId(),
                 storedStatusInfo.getStoredStatus()
         );
 
         inventoryRepository.save(inventory);
+    }
+
+    public void findBlockInventoryByUserId(Long userId) {
+
+        List<Inventory> inventoryList = inventoryRepository.findBlockInventoryByUserID(userId);
     }
 }

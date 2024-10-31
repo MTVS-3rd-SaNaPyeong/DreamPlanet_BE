@@ -33,11 +33,14 @@ public class Inventory extends EntityTimestamp {
     private Boolean storedStatus;
 
     // 게시판에서 게시된 위치 (좌상단부터 1 ~ 우하단 n)
+    // 미게시된 작품의 번호는 0으로 설정
     private Long postedLocation;
 
-    public Inventory(PlanetType planetType, Long playedPlanetId, Boolean storedStatus) {
+    public Inventory(Long userId, PlanetType planetType, Long playedPlanetId, Boolean storedStatus) {
+        this.userId = userId;
         this.planetType = planetType;
         this.playedPlanetId = playedPlanetId;
         this.storedStatus = storedStatus;
+        this.postedLocation = 0L;
     }
 }
