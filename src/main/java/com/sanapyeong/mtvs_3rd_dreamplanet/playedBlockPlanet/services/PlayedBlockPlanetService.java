@@ -26,4 +26,7 @@ public class PlayedBlockPlanetService {
     public Long createPlayedBlockPlanet(PlayedBlockPlanet playedBlockPlanet) {
         return playedBlockPlanetRepository.save(playedBlockPlanet).getId();
     }
+
+    public void saveCompletedWork(String storedURL) {
+    }
 }
