@@ -1,6 +1,6 @@
 spring:
   profiles:
-    include: dev, local
+    include: dev, local, aws
 
   application:
     name: MTVS_3rd_DreamPlanet
