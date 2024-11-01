@@ -1,5 +1,7 @@
 package com.sanapyeong.global.configuration;
 
+
+
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.models.Components;
@@ -13,8 +15,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
-@EnableWebMvc
-//@RequiredArgsConstructor
 @OpenAPIDefinition(
         info = @Info(title = "MTVS-3rd-DREAM-PLANET",
                 description = "API statement for Dream Planet",
@@ -54,14 +54,14 @@ public class SpringDocConfiguration {
                 .addSecurityItem(securityRequirement);
     }
 
-    @Bean
-    public GroupedOpenApi dev(){
-        String[] path = {"/v1/**"};
-
-        return GroupedOpenApi
-                .builder()
-                .group("Dream Planet Swagger v1-dev")
-                .pathsToMatch(path)
-                .build();
-    }
+//    @Bean
+//    public GroupedOpenApi dev(){
+//        String[] path = {"/v1/**"};
+//
+//        return GroupedOpenApi
+//                .builder()
+//                .group("Dream Planet Swagger v1-dev")
+//                .pathsToMatch(path)
+//                .build();
+//    }
 }
