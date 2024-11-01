@@ -1,5 +1,6 @@
 package com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.controller;
 
+import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.dto.BlockInventoryFindResponseDTO;
 import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.dto.PostedLocationUpdateRequestDTO;
 import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.dto.SaveInventoryDTO;
 import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.services.InventoryService;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Tag(name="Inventory Controller", description = "Inventory Controller")
@@ -36,41 +38,47 @@ public class InventoryController {
         this.userTokenStorage = userTokenStorage;
     }
 
-    @GetMapping("/inventories")
-    public ResponseEntity<?> findBlockInventoryByUserToken(
-            HttpServletRequest request
-    ){
-        // Response Message 기본 세팅
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-        Map<String, Object> responseMap = new HashMap<>();
-
-        // 헤더에서 토큰 추출
-        String authorizationHeader = request.getHeader("Authorization");
-        System.out.println("Authorization header: " + authorizationHeader);
-
-        // User Token Storage에서 해당 토큰에 맞는 유저 식별
-        Long userId = userTokenStorage.getToken(authorizationHeader);
-        // 만약 입력된 토큰에 해당하는 유저가 없다면
-        if (userId == null) {
-            ResponseMessage responseMessage = new ResponseMessage(401, "사용자 없음", responseMap);
-            return new ResponseEntity<>(responseMessage, headers, HttpStatus.UNAUTHORIZED);
-        }
-
-        try {
-            inventoryService.findBlockInventoryByUserId(userId);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public List<> findBlockInventoryByUserId(
-            Long userId
-    ){
-        inventoryService.findBlockInventoryByUserId(userId);
-
-        return
-    }
+//    @GetMapping("/inventories")
+//    public ResponseEntity<?> findBlockInventoryByUserToken(
+//            HttpServletRequest request
+//    ){
+//        // Response Message 기본 세팅
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+//        Map<String, Object> responseMap = new HashMap<>();
+//
+//        // 헤더에서 토큰 추출
+//        String authorizationHeader = request.getHeader("Authorization");
+//        System.out.println("Authorization header: " + authorizationHeader);
+//
+//        // User Token Storage에서 해당 토큰에 맞는 유저 식별
+//        Long userId = userTokenStorage.getToken(authorizationHeader);
+//        // 만약 입력된 토큰에 해당하는 유저가 없다면
+//        if (userId == null) {
+//            ResponseMessage responseMessage = new ResponseMessage(401, "사용자 없음", responseMap);
+//            return new ResponseEntity<>(responseMessage, headers, HttpStatus.UNAUTHORIZED);
+//        }
+//
+//        List<BlockInventoryFindResponseDTO> blockInventoryList = findBlockInventoryByUserId(userId);
+//
+//        try {
+//            inventoryService.findBlockInventoryByUserId(userId);
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+//
+//    public List<BlockInventoryFindResponseDTO> findBlockInventoryByUserId(
+//            Long userId
+//    ){
+//        try {
+//            List<BlockInventoryFindResponseDTO> blickInventoryList= inventoryService.findBlockInventoryByUserId(userId);
+//
+//        } catch (Exception e) {
+//            ResponseMessage responseMessage = new ResponseMessage(401, "사용자 없음", responseMap);
+//            return new ResponseEntity<>(responseMessage, headers, HttpStatus.UNAUTHORIZED);
+//        }
+//    }
 
     @PostMapping("/inventories")
     public ResponseEntity<?> saveInventory(
@@ -108,26 +116,26 @@ public class InventoryController {
         }
     }
 
-    @PatchMapping("/inventories")
-    public ResponseEntity<?> updatePostedLocation(
-            @RequestBody PostedLocationUpdateRequestDTO postedLocationInfo,
-            HttpServletRequest request
-    ){
-        // Response Message 기본 세팅
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-        Map<String, Object> responseMap = new HashMap<>();
-
-        // 헤더에서 토큰 추출
-        String authorizationHeader = request.getHeader("Authorization");
-        System.out.println("Authorization header: " + authorizationHeader);
-
-        // User Token Storage에서 해당 토큰에 맞는 유저 식별
-        Long userId = userTokenStorage.getToken(authorizationHeader);
-        // 만약 입력된 토큰에 해당하는 유저가 없다면
-        if (userId == null) {
-            ResponseMessage responseMessage = new ResponseMessage(401, "사용자 없음", responseMap);
-            return new ResponseEntity<>(responseMessage, headers, HttpStatus.UNAUTHORIZED);
-        }
-    }
+//    @PatchMapping("/inventories")
+//    public ResponseEntity<?> updatePostedLocation(
+//            @RequestBody PostedLocationUpdateRequestDTO postedLocationInfo,
+//            HttpServletRequest request
+//    ){
+//        // Response Message 기본 세팅
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+//        Map<String, Object> responseMap = new HashMap<>();
+//
+//        // 헤더에서 토큰 추출
+//        String authorizationHeader = request.getHeader("Authorization");
+//        System.out.println("Authorization header: " + authorizationHeader);
+//
+//        // User Token Storage에서 해당 토큰에 맞는 유저 식별
+//        Long userId = userTokenStorage.getToken(authorizationHeader);
+//        // 만약 입력된 토큰에 해당하는 유저가 없다면
+//        if (userId == null) {
+//            ResponseMessage responseMessage = new ResponseMessage(401, "사용자 없음", responseMap);
+//            return new ResponseEntity<>(responseMessage, headers, HttpStatus.UNAUTHORIZED);
+//        }
+//    }
 }
