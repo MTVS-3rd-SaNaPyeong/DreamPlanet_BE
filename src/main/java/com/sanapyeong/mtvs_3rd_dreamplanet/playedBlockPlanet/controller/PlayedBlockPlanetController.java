@@ -62,7 +62,8 @@ public class PlayedBlockPlanetController {
         // 해당 객체를 저장한 후, played block planet의 id 받아옴
         Long id = playedBlockPlanetService.createPlayedBlockPlanet(playedBlockPlanet);
 
-        //return ResponseEntity.ok().body(id);
+        //responseMap에 playedBlockPlanetId 삽입
+        responseMap.put("playedBlockPlanetId", id);
 
         // 정상적으로 저장되었을 경우
         ResponseMessage responseMessage = new ResponseMessage(201, "플레이 할 블록 행성 생성 성공", responseMap);
@@ -93,39 +94,6 @@ public class PlayedBlockPlanetController {
         return null;
     }
 
-
-//    @PatchMapping(
-//            value = "/played-block-planets/completed-work",
-//            consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE,
-//            produces = MediaType.APPLICATION_JSON_VALUE
-//    )
-//    public ResponseEntity<?> saveCompletedWork(
-//            @ModelAttribute CompletedWorkSaveDTO completedWorkInfo
-//            ) throws IOException {
-//        // Response Message 기본 세팅
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-//        Map<String, Object> responseMap = new HashMap<>();
-//
-//        // 존재하는 played block planet인지 확인
-//        PlayedBlockPlanet playedBlockPlanet = playedBlockPlanetService.findPlayedBlockPlanetById(completedWorkInfo.getPlayedBlockPlanetId());
-//        if(playedBlockPlanet == null){
-//            // 블록 행성 없음
-//            ResponseMessage responseMessage = new ResponseMessage(404, "해당하는 블록 행성 플레이 없음", responseMap);
-//            return new ResponseEntity<>(responseMessage, headers, HttpStatus.NOT_FOUND);
-//        }
-//
-//        // S3 서버 이미지 저장
-//        // 저장 후, URL 주소 반환
-//        String completedWorkURL = s3Service.saveCompleteWork(completedWorkInfo.getCompletedWork(), completedWorkInfo.getPlayedBlockPlanetId());
-//
-//        // URL 주소 저장
-//        playedBlockPlanetService.saveCompletedWork(completedWorkURL);
-//
-//        ResponseMessage responseMessage = new ResponseMessage(201, "완성 작품 저장 성공", responseMap);
-//        return new ResponseEntity<>(responseMessage, headers, HttpStatus.CREATED);
-//    }
-
     // 완성 작품 저장
     @PatchMapping(
             value = "/played-block-planets/completed-work",
@@ -154,7 +122,7 @@ public class PlayedBlockPlanetController {
         String completedWorkURL = s3Service.saveCompleteWork(completedWork, playedBlockPlanetId);
 
         // URL 주소 저장
-        playedBlockPlanetService.saveCompletedWork(completedWorkURL);
+        playedBlockPlanetService.saveCompletedWork(playedBlockPlanetId, completedWorkURL);
 
         ResponseMessage responseMessage = new ResponseMessage(201, "완성 작품 저장 성공", responseMap);
         return new ResponseEntity<>(responseMessage, headers, HttpStatus.CREATED);
