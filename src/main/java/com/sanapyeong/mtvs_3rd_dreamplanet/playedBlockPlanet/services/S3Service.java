@@ -50,6 +50,14 @@ public class S3Service {
         return upload(uploadFile, COMPLETED_WORK_DIR, playedBlockPlanetId);
     }
 
+    public String saveColorDotImage(MultipartFile multipartFile, Long playedBlockPlanetId) throws IOException{
+
+        File uploadFile = convert(multipartFile)
+                .orElseThrow(() -> new IllegalArgumentException("error: MultipartFile -> File convert fail"));
+
+        return upload(uploadFile, COLOR_DOT_IMAGE_DIR, playedBlockPlanetId);
+    }
+
     // S3로 파일 업로드하기
     private String upload(File uploadFile, String dirName, Long playedBlockPlanetId) {
         String fileName = playedBlockPlanetId + "/" + dirName + UUID.randomUUID() + uploadFile.getName();   // S3에 저장된 파일 이름
