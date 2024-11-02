@@ -3,6 +3,7 @@ package com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.controller;
 import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.dto.BlockInventoryFindResponseDTO;
 import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.dto.PostedLocationUpdateRequestDTO;
 import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.dto.SaveInventoryDTO;
+import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.entities.Inventory;
 import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.services.InventoryService;
 import com.sanapyeong.mtvs_3rd_dreamplanet.ResponseMessage;
 import com.sanapyeong.mtvs_3rd_dreamplanet.component.UserTokenStorage;
@@ -67,18 +68,22 @@ public class InventoryController {
 //            throw new RuntimeException(e);
 //        }
 //    }
-//
-//    public List<BlockInventoryFindResponseDTO> findBlockInventoryByUserId(
-//            Long userId
-//    ){
-//        try {
-//            List<BlockInventoryFindResponseDTO> blickInventoryList= inventoryService.findBlockInventoryByUserId(userId);
-//
-//        } catch (Exception e) {
-//            ResponseMessage responseMessage = new ResponseMessage(401, "사용자 없음", responseMap);
-//            return new ResponseEntity<>(responseMessage, headers, HttpStatus.UNAUTHORIZED);
-//        }
-//    }
+
+    // user id로 블록 행성 인벤토리 조회
+    public List<BlockInventoryFindResponseDTO> findBlockInventoryByUserId(
+            Long userId
+    ){
+
+        List<BlockInventoryFindResponseDTO> blockInventoryList;
+
+        try {
+            blockInventoryList= inventoryService.findBlockInventoryByUserId(userId);
+        } catch (Exception e) {
+            return null;
+        }
+
+        return blockInventoryList;
+    }
 
     @PostMapping("/inventories")
     public ResponseEntity<?> saveInventory(
