@@ -1,6 +1,7 @@
 package com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.repositories;
 
 
+import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.dto.BlockInventoryFindResponseDTO;
 import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.entities.Inventory;
 import com.sanapyeong.mtvs_3rd_dreamplanet.user.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,10 +11,9 @@ import java.util.List;
 
 public interface InventoryRepository extends JpaRepository<Inventory, Long> {
 
-    //List<Inventory> findBlockInventoryByUserID(Long userId);
+    @Query("SELECT i.playedPlanetId, i.postedLocation, b.completedWork " +
+            "FROM Inventory i LEFT JOIN PlayedBlockPlanet b on i.playedPlanetId = b.id " +
+            "WHERE i.userId = :userId AND i.planetType = 'BLOCK' AND i.storedStatus = true")
+    List<Object[]> findBlockInventoryByUserId(Long userId);
 
-
-
-    @Query("SELECT u FROM User u WHERE u.loginId = :loginId")
-    User findUserByLoginId(String loginId);
 }
