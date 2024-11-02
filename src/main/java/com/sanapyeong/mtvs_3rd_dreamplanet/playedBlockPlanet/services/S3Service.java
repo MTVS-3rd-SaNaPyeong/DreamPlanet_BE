@@ -38,9 +38,9 @@ public class S3Service {
         this.additionalModelsConverter = additionalModelsConverter;
     }
 
-    private String COLOR_DOT_IMAGE_DIR = "color-dot-image/";
-    private String BLACK_AND_WHITE_DOT_IMAGE_DIR = "black-and-white-dot-image/";
-    private String COMPLETED_WORK_DIR = "completed-work/";
+    private final String COLOR_DOT_IMAGE_DIR = "color-dot-image/";
+    private final String BLACK_AND_WHITE_DOT_IMAGE_DIR = "black-and-white-dot-image/";
+    private final String COMPLETED_WORK_DIR = "completed-work/";
 
     public String saveCompleteWork(MultipartFile multipartFile, Long playedBlockPlanetId) throws IOException{
 
