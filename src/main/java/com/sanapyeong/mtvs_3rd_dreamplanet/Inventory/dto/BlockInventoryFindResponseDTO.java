@@ -31,8 +31,13 @@ public class BlockInventoryFindResponseDTO {
 
     public BlockInventoryFindResponseDTO(Object[] result) {
 
-        this.playedPlanetId = (Long) result[0];          // playedPlanetId
-        this.postedLocation = (Long) result[1];          // postedLocation
+        // playedPlanetId
+        this.playedPlanetId = (Long) result[0];
+
+        // postedLocation
+        this.postedLocation = (Long) result[1];
+
+        // completedWork
         this.completedWork = (String) result[2];
 
     }

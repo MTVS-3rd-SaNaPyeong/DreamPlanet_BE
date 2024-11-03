@@ -70,6 +70,7 @@ public class InventoryController {
 //    }
 
     // user id로 블록 행성 인벤토리 조회
+    @GetMapping("/inventories")
     public List<BlockInventoryFindResponseDTO> findBlockInventoryByUserId(
             Long userId
     ){
@@ -82,6 +83,7 @@ public class InventoryController {
             return null;
         }
 
+        // playedPlanetId, postedLocation, completedWork
         return blockInventoryList;
     }
 
