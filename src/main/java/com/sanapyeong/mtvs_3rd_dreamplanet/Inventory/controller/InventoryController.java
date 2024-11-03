@@ -39,38 +39,38 @@ public class InventoryController {
         this.userTokenStorage = userTokenStorage;
     }
 
-//    @GetMapping("/inventories")
-//    public ResponseEntity<?> findBlockInventoryByUserToken(
-//            HttpServletRequest request
-//    ){
-//        // Response Message 기본 세팅
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-//        Map<String, Object> responseMap = new HashMap<>();
-//
-//        // 헤더에서 토큰 추출
-//        String authorizationHeader = request.getHeader("Authorization");
-//        System.out.println("Authorization header: " + authorizationHeader);
-//
-//        // User Token Storage에서 해당 토큰에 맞는 유저 식별
-//        Long userId = userTokenStorage.getToken(authorizationHeader);
-//        // 만약 입력된 토큰에 해당하는 유저가 없다면
-//        if (userId == null) {
-//            ResponseMessage responseMessage = new ResponseMessage(401, "사용자 없음", responseMap);
-//            return new ResponseEntity<>(responseMessage, headers, HttpStatus.UNAUTHORIZED);
-//        }
-//
-//        List<BlockInventoryFindResponseDTO> blockInventoryList = findBlockInventoryByUserId(userId);
-//
-//        try {
-//            inventoryService.findBlockInventoryByUserId(userId);
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
+    @GetMapping("/inventories")
+    public ResponseEntity<?> findBlockInventoryByUserToken(
+            HttpServletRequest request
+    ){
+        // Response Message 기본 세팅
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+        Map<String, Object> responseMap = new HashMap<>();
+
+        // 헤더에서 토큰 추출
+        String authorizationHeader = request.getHeader("Authorization");
+        System.out.println("Authorization header: " + authorizationHeader);
+
+        // User Token Storage에서 해당 토큰에 맞는 유저 식별
+        Long userId = userTokenStorage.getToken(authorizationHeader);
+        // 만약 입력된 토큰에 해당하는 유저가 없다면
+        if (userId == null) {
+            ResponseMessage responseMessage = new ResponseMessage(401, "사용자 없음", responseMap);
+            return new ResponseEntity<>(responseMessage, headers, HttpStatus.UNAUTHORIZED);
+        }
+
+        List<BlockInventoryFindResponseDTO> blockInventoryList = findBlockInventoryByUserId(userId);
+
+        responseMap.put("blockInventory", blockInventoryList);
+
+        ResponseMessage responseMessage = new ResponseMessage(200, "조회 성공", responseMap);
+        return new ResponseEntity<>(responseMessage, headers, HttpStatus.OK);
+    }
 
     // user id로 블록 행성 인벤토리 조회
-    @GetMapping("/inventories")
+    // 나만의 우주열차 입장 시, 게시 작품 정보 전달용
+    //@GetMapping("/inventories")
     public List<BlockInventoryFindResponseDTO> findBlockInventoryByUserId(
             Long userId
     ){
