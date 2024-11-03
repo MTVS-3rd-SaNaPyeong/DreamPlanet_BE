@@ -124,6 +124,8 @@ public class PlayedBlockPlanetController {
         // URL 주소 저장
         playedBlockPlanetService.saveCompletedWork(playedBlockPlanetId, completedWorkURL);
 
+        responseMap.put("completedWork", completedWorkURL);
+
         ResponseMessage responseMessage = new ResponseMessage(201, "완성 작품 저장 성공", responseMap);
         return new ResponseEntity<>(responseMessage, headers, HttpStatus.CREATED);
     }
