@@ -83,7 +83,25 @@ public class PlayedBlockPlanetService {
                 playedBlockPlanet.setBlackAndWhiteDotImage(storedURL);
             }
 
-            // 자동으로 변경된 내용이 영속성 컨텍스트에 반영됨 (Transactional 덕분)
+        } else {
+            throw new IllegalArgumentException("ID에 해당하는 블록 행성이 존재하지 않습니다.");
+        }
+    }
+
+    @Transactional
+    public void savePrompt(Long playedBlockPlanetId, String prompt) {
+
+        Optional<PlayedBlockPlanet> optionalPlayedBlockPlanet = playedBlockPlanetRepository.findById(playedBlockPlanetId);
+
+        // 엔티티가 존재하는지 확인
+        if (optionalPlayedBlockPlanet.isPresent()) {
+            PlayedBlockPlanet playedBlockPlanet = optionalPlayedBlockPlanet.get();
+
+            // completed work 정보 업데이트
+            if (prompt != null) {
+                playedBlockPlanet.setPrompt(prompt);
+            }
+
         } else {
             throw new IllegalArgumentException("ID에 해당하는 블록 행성이 존재하지 않습니다.");
         }

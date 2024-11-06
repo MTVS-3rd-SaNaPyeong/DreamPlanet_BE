@@ -36,13 +36,19 @@ public class PromptInspectionService {
         System.out.println(response.getBody());
 
         // JSON 파싱하여 translated_text 추출
+        String correctedText = null;
         String translatedText = null;
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(response.getBody());
+            correctedText = root.path("text_processing").path("corrected_text").asText();
             translatedText = root.path("text_processing").path("translated_text").asText();
         } catch (Exception e) {
-            e.printStackTrace();
+            return null;
+        }
+
+        if(correctedText.equals("INVALID")){
+            return null;
         }
 
         return translatedText;

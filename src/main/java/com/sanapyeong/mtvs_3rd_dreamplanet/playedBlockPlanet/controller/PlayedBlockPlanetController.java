@@ -103,9 +103,21 @@ public class PlayedBlockPlanetController {
 
         String translatedText = promptInspectionService.inspectPrompt(prompt);
 
+        if(translatedText == null){
+            ResponseMessage responseMessage = new ResponseMessage(400, "올바르지 못한 프롬프트입니다.", responseMap);
+            return new ResponseEntity<>(responseMessage, headers, HttpStatus.BAD_REQUEST);
+        }
+
         // 성공 시, 컬러 도트 이미지 및 흑백 도트 이미지 반환
         // 두 이미지 S3 서버에 저장 후 URL 주소 반환
-        List<MultipartFile> dotImages = imageGenerationService.generateDotImage(translatedText);
+        List<MultipartFile> dotImages = null;
+
+        try {
+            dotImages = imageGenerationService.generateDotImage(translatedText);
+        } catch (IOException e) {
+            ResponseMessage responseMessage = new ResponseMessage(500, "컬러 및 흑백 도트 이미지 생성 실패", responseMap);
+            return new ResponseEntity<>(responseMessage, headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         MultipartFile colorDotImage = dotImages.get(0);
         MultipartFile blackAndWhiteDotImage = dotImages.get(1);
@@ -113,9 +125,8 @@ public class PlayedBlockPlanetController {
         String colorDotImageURL = s3Service.saveColorDotImage(colorDotImage, playedBlockPlanetId);
         String blackAndWhiteDotImageURL = s3Service.saveBlackAndWhiteDotImage(blackAndWhiteDotImage, playedBlockPlanetId);
 
-        // 실패 시, 실패 메시지 반환
-
-        // URL 주소 저장
+        // 프롬프트 및 URL 주소 저장
+        playedBlockPlanetService.savePrompt(playedBlockPlanetId, prompt);
         playedBlockPlanetService.saveColorDotImage(playedBlockPlanetId, colorDotImageURL);
         playedBlockPlanetService.saveBlackAndWhiteDotImage(playedBlockPlanetId, blackAndWhiteDotImageURL);
 
