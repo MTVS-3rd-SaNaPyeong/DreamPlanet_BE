@@ -85,7 +85,7 @@ public class ImageGenerationService {
 //        }
 //        return dotImages;
 
-        String url = "https://24a1-59-13-225-125.ngrok-free.app/generate_icon";
+        String url = "https://4529-59-13-225-125.ngrok-free.app/generate_icon";
         List<MultipartFile> dotImages = new ArrayList<>();
 
         // HttpClient 생성
