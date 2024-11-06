@@ -2,6 +2,8 @@ package com.sanapyeong.mtvs_3rd_dreamplanet.playedBlockPlanet.controller;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.sanapyeong.mtvs_3rd_dreamplanet.ResponseMessage;
+import com.sanapyeong.mtvs_3rd_dreamplanet.aiService.ImageGenerationService;
+import com.sanapyeong.mtvs_3rd_dreamplanet.aiService.PromptInspectionService;
 import com.sanapyeong.mtvs_3rd_dreamplanet.component.UserTokenStorage;
 import com.sanapyeong.mtvs_3rd_dreamplanet.playedBlockPlanet.dto.CompletedWorkSaveDTO;
 import com.sanapyeong.mtvs_3rd_dreamplanet.playedBlockPlanet.dto.PlayedBlockPlanetCreateRequestDTO;
@@ -20,9 +22,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.*;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Tag(name="Played Block Planet Controller", description = "Played Block Planet Controller")
@@ -34,16 +38,22 @@ public class PlayedBlockPlanetController {
     private final PlayedBlockPlanetService playedBlockPlanetService;
     private final UserTokenStorage userTokenStorage;
     private final S3Service s3Service;
+    private final PromptInspectionService promptInspectionService;
+    private final ImageGenerationService imageGenerationService;
 
     @Autowired
     public PlayedBlockPlanetController(
             PlayedBlockPlanetService playedBlockPlanetService,
             UserTokenStorage userTokenStorage,
-            S3Service s3Service
+            S3Service s3Service,
+            PromptInspectionService promptInspectionService,
+            ImageGenerationService imageGenerationService
     ) {
         this.playedBlockPlanetService = playedBlockPlanetService;
         this.userTokenStorage = userTokenStorage;
         this.s3Service = s3Service;
+        this.promptInspectionService = promptInspectionService;
+        this.imageGenerationService = imageGenerationService;
     }
 
     // 플레이 할 블록 행성 생성
@@ -73,25 +83,48 @@ public class PlayedBlockPlanetController {
     // 도트 이미지 생성
     @PatchMapping("/played-block-planets/dot-images")
     public ResponseEntity<?> createDotImage(
-            @RequestParam Long id,
+            @RequestParam Long playedBlockPlanetId,
             @RequestParam String prompt
-    ){
+    ) throws IOException {
+
+        // Response Message 기본 세팅
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+        Map<String, Object> responseMap = new HashMap<>();
 
         // 존재하는 played block planet인지 확인
-        PlayedBlockPlanet playedBlockPlanet = playedBlockPlanetService.findPlayedBlockPlanetById(id);
+        PlayedBlockPlanet playedBlockPlanet = playedBlockPlanetService.findPlayedBlockPlanetById(playedBlockPlanetId);
         if(playedBlockPlanet == null){
             return ResponseEntity.notFound().build();
         }
 
         // ai image 생성 요청 api
         // 성공 여부 반환
+
+        String translatedText = promptInspectionService.inspectPrompt(prompt);
+
         // 성공 시, 컬러 도트 이미지 및 흑백 도트 이미지 반환
         // 두 이미지 S3 서버에 저장 후 URL 주소 반환
-        String colorDotImageURL = "colorDotImageURL";
-        String blackAndWhiteDotImageURL = "blackAndWhiteDotImageURL";
+        List<MultipartFile> dotImages = imageGenerationService.generateDotImage(translatedText);
+
+        MultipartFile colorDotImage = dotImages.get(0);
+        MultipartFile blackAndWhiteDotImage = dotImages.get(1);
+
+        String colorDotImageURL = s3Service.saveColorDotImage(colorDotImage, playedBlockPlanetId);
+        String blackAndWhiteDotImageURL = s3Service.saveBlackAndWhiteDotImage(blackAndWhiteDotImage, playedBlockPlanetId);
+
         // 실패 시, 실패 메시지 반환
 
-        return null;
+        // URL 주소 저장
+        playedBlockPlanetService.saveColorDotImage(playedBlockPlanetId, colorDotImageURL);
+        playedBlockPlanetService.saveBlackAndWhiteDotImage(playedBlockPlanetId, blackAndWhiteDotImageURL);
+
+
+        responseMap.put("colorDotImage", colorDotImageURL);
+        responseMap.put("blackAndWhiteDotImage", blackAndWhiteDotImageURL);
+
+        ResponseMessage responseMessage = new ResponseMessage(201, "컬러 및 흑백 도트 이미지 저장 성공", responseMap);
+        return new ResponseEntity<>(responseMessage, headers, HttpStatus.CREATED);
     }
 
     // 완성 작품 저장
