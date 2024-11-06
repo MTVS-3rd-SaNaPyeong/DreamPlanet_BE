@@ -7,8 +7,13 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name="TBL_MY_UNIVERSE_TRAIN")
@@ -26,6 +31,9 @@ public class MyUniverseTrain extends EntityTimestamp {
 
     private Long userId;
 
+    private String trainName;
+
+    @Column(unique = true)
     private String uniqueCode;
 
     @Column(columnDefinition = "json")
@@ -36,6 +44,16 @@ public class MyUniverseTrain extends EntityTimestamp {
 
     @Transient
     private ObjectMapper objectMapper = new ObjectMapper();
+
+    public MyUniverseTrain(Long userId, String trainName, String uniqueCode) {
+        this.userId = userId;
+        this.trainName = trainName;
+        this.uniqueCode = uniqueCode;
+        List<Boolean> planetStatus = Arrays.asList(new Boolean[]{false, false, false, false, false});
+        this.planetStatus = convertBooleanListToJson(planetStatus);
+        List<Integer> planetOrder = Arrays.asList(new Integer[]{0, 0, 0, 0, 0});
+        this.planetOrder = convertIntegerListToJson(planetOrder);
+    }
 
     public void setPlanetStatus(List<Boolean> planetStatus){
         this.planetStatus = convertBooleanListToJson(planetStatus);
