@@ -78,6 +78,6 @@ public class MyUniverseTrainService {
                 sb.append(String.format("%02x", hashBytes[j]));
             }
 
-        return uuidString;
+        return sb.toString();
     }
 }
