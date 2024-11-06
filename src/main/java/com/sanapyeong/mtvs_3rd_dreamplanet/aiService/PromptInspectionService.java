@@ -47,7 +47,7 @@ public class PromptInspectionService {
             return null;
         }
 
-        if(correctedText.equals("INVALID")){
+        if(correctedText.equals("'INVALID'")){
             return null;
         }
 
