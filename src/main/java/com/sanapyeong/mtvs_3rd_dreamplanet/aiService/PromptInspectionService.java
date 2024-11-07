@@ -16,7 +16,7 @@ public class PromptInspectionService {
 
     public String inspectPrompt(String prompt){
 
-        String url = "https://4529-59-13-225-125.ngrok-free.app/process_text";
+        String url = "http://221.163.19.142:17777/process_text";
 
         // 헤더 설정 (필요한 경우)
         HttpHeaders headers = new HttpHeaders();
