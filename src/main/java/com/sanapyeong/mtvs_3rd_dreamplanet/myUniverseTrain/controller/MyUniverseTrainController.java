@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,7 +52,13 @@ public class MyUniverseTrainController {
         }
 
         MyUniverseTrainFindResponseDTO findResult =
-                myUniverseTrainService.findMyUniverseTrainByUserId(userId);
+                null;
+        try {
+            findResult = myUniverseTrainService.findMyUniverseTrainByUserId(userId);
+        } catch (IOException e) {
+            ResponseMessage responseMessage = new ResponseMessage(404, "열차 없음", responseMap);
+            return new ResponseEntity<>(responseMessage, headers, HttpStatus.NOT_FOUND);
+        }
 
         responseMap.put("myUniverseTrain", findResult);
 
@@ -86,5 +93,73 @@ public class MyUniverseTrainController {
 
         ResponseMessage responseMessage = new ResponseMessage(201, "나만의 우주열차 생성 성공", responseMap);
         return new ResponseEntity<>(responseMessage, headers, HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/my-universe-trains/modifying-planet-order")
+    public ResponseEntity<?> modifyPlanetOrder(
+            @RequestParam String planetOrder,
+            HttpServletRequest request
+    ){
+        // Response Message 기본 세팅
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+        Map<String, Object> responseMap = new HashMap<>();
+
+        // 헤더에서 토큰 추출
+        String authorizationHeader = request.getHeader("Authorization");
+        System.out.println("Authorization header: " + authorizationHeader);
+
+        // User Token Storage에서 해당 토큰에 맞는 유저 식별
+        Long userId = userTokenStorage.getToken(authorizationHeader);
+
+        // 만약 입력된 토큰에 해당하는 유저가 없다면
+        if (userId == null) {
+            ResponseMessage responseMessage = new ResponseMessage(404, "사용자 없음", responseMap);
+            return new ResponseEntity<>(responseMessage, headers, HttpStatus.NOT_FOUND);
+        }
+
+        try {
+            myUniverseTrainService.modifyPlanetOrder(userId, planetOrder);
+        } catch (Exception e) {
+            ResponseMessage responseMessage = new ResponseMessage(400, "잘못된 요청입니다", responseMap);
+            return new ResponseEntity<>(responseMessage, headers, HttpStatus.BAD_REQUEST);
+        }
+
+        ResponseMessage responseMessage = new ResponseMessage(200, "planet order 수정 성공", responseMap);
+        return new ResponseEntity<>(responseMessage, headers, HttpStatus.OK);
+    }
+
+    @PatchMapping("/my-universe-trains/modifying-planet-status")
+    public ResponseEntity<?> modifyPlanetStatus(
+            @RequestParam String planetStatus,
+            HttpServletRequest request
+    ){
+        // Response Message 기본 세팅
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+        Map<String, Object> responseMap = new HashMap<>();
+
+        // 헤더에서 토큰 추출
+        String authorizationHeader = request.getHeader("Authorization");
+        System.out.println("Authorization header: " + authorizationHeader);
+
+        // User Token Storage에서 해당 토큰에 맞는 유저 식별
+        Long userId = userTokenStorage.getToken(authorizationHeader);
+
+        // 만약 입력된 토큰에 해당하는 유저가 없다면
+        if (userId == null) {
+            ResponseMessage responseMessage = new ResponseMessage(404, "사용자 없음", responseMap);
+            return new ResponseEntity<>(responseMessage, headers, HttpStatus.NOT_FOUND);
+        }
+
+        try {
+            myUniverseTrainService.modifyPlanetStatus(userId, planetStatus);
+        } catch (Exception e) {
+            ResponseMessage responseMessage = new ResponseMessage(400, "잘못된 요청입니다", responseMap);
+            return new ResponseEntity<>(responseMessage, headers, HttpStatus.BAD_REQUEST);
+        }
+
+        ResponseMessage responseMessage = new ResponseMessage(200, "planet status 수정 성공", responseMap);
+        return new ResponseEntity<>(responseMessage, headers, HttpStatus.OK);
     }
 }
