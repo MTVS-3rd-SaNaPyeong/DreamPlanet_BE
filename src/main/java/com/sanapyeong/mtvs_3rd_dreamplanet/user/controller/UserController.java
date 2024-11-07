@@ -7,6 +7,7 @@ import com.sanapyeong.mtvs_3rd_dreamplanet.user.dto.UserLoginDTO;
 import com.sanapyeong.mtvs_3rd_dreamplanet.user.dto.UserSignUpDTO;
 import com.sanapyeong.mtvs_3rd_dreamplanet.user.entities.User;
 import com.sanapyeong.mtvs_3rd_dreamplanet.user.services.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
@@ -49,6 +50,7 @@ public class UserController {
 //    }
 
     @PostMapping("/sign-up")
+    @Operation(summary = "회원가입", description = "회원가입 API")
     public ResponseEntity<ResponseMessage> signUp(@RequestBody UserSignUpDTO userInfo){
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
@@ -74,6 +76,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
+    @Operation(summary = "로그인", description = "로그인 API")
     public ResponseEntity<?> login(@RequestBody UserLoginDTO loginInfo){
 
         HttpHeaders headers = new HttpHeaders();
@@ -108,6 +111,7 @@ public class UserController {
     }
 
     @PostMapping("/logout")
+    @Operation(summary = "로그아웃", description = "로그아웃 API")
     public ResponseEntity<?> logout(HttpServletRequest request){
 
         HttpHeaders headers = new HttpHeaders();
