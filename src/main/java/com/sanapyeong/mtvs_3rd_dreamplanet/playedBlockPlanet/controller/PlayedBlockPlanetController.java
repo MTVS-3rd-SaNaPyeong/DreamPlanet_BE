@@ -10,6 +10,7 @@ import com.sanapyeong.mtvs_3rd_dreamplanet.playedBlockPlanet.dto.PlayedBlockPlan
 import com.sanapyeong.mtvs_3rd_dreamplanet.playedBlockPlanet.entities.PlayedBlockPlanet;
 import com.sanapyeong.mtvs_3rd_dreamplanet.playedBlockPlanet.services.PlayedBlockPlanetService;
 import com.sanapyeong.mtvs_3rd_dreamplanet.playedBlockPlanet.services.S3Service;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -58,6 +59,7 @@ public class PlayedBlockPlanetController {
 
     // 플레이 할 블록 행성 생성
     @PostMapping("/played-block-planets")
+    @Operation(summary = "플레이 할 블록 행성 생성 API", description = "플레이 할 블록 행성 생성 API")
     public ResponseEntity<?> createPlayedBlockPlanet(
             @RequestParam String photonPlanetId
     ) {
@@ -82,6 +84,7 @@ public class PlayedBlockPlanetController {
 
     // 도트 이미지 생성
     @PatchMapping("/played-block-planets/dot-images")
+    @Operation(summary = "도트 이미지 생성", description = "컬러 및 흑백 도트 이미지 생성 API")
     public ResponseEntity<?> createDotImage(
             @RequestParam Long playedBlockPlanetId,
             @RequestParam String prompt
@@ -143,6 +146,7 @@ public class PlayedBlockPlanetController {
             value = "/played-block-planets/completed-work",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
+    @Operation(summary = "블록 행성 완성 작품 저장", description = "블록 행성 완성 작품 저장 API")
     public ResponseEntity<?> saveCompletedWork(
             @RequestParam Long playedBlockPlanetId,
             @RequestParam MultipartFile completedWork,

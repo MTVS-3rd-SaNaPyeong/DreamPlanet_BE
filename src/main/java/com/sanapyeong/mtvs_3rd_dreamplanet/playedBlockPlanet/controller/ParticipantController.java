@@ -8,6 +8,7 @@ import com.sanapyeong.mtvs_3rd_dreamplanet.playedBlockPlanet.services.Participan
 import com.sanapyeong.mtvs_3rd_dreamplanet.playedBlockPlanet.services.PlayedBlockPlanetService;
 import com.sanapyeong.mtvs_3rd_dreamplanet.user.entities.User;
 import com.sanapyeong.mtvs_3rd_dreamplanet.user.services.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,7 @@ public class ParticipantController {
 
     // 플레이 할 블록 행성 입장
     @PostMapping("/block-planet-participants")
+    @Operation(summary = "플레이 할 블록 행성 입장", description = "블록 행성에 입장할 시, 유저의 참여 정보를 저장하는 API")
     public ResponseEntity<?> enterPlayedBlockPlanet(
             // @RequestBody ParticipantRegisterDTO participantInfo
             @RequestParam("playedBlockPlanetId") Long playedBlockPlanetId,

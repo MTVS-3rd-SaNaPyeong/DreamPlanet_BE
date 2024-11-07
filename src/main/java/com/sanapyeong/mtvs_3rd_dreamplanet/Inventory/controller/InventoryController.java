@@ -7,6 +7,9 @@ import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.entities.Inventory;
 import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.services.InventoryService;
 import com.sanapyeong.mtvs_3rd_dreamplanet.ResponseMessage;
 import com.sanapyeong.mtvs_3rd_dreamplanet.component.UserTokenStorage;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +42,8 @@ public class InventoryController {
         this.userTokenStorage = userTokenStorage;
     }
 
-    @GetMapping("/inventories")
+    @GetMapping("/inventories/block-inventory")
+    @Operation(summary = "유저의 블록 행성 인벤토리 조회", description = "유저의 블록 행성 인벤토리 조회 API")
     public ResponseEntity<?> findBlockInventoryByUserToken(
             HttpServletRequest request
     ){
@@ -88,6 +92,7 @@ public class InventoryController {
     }
 
     @PostMapping("/inventories")
+    @Operation(summary = "행성 플레이 작품 저장", description = "행성 플레이 후, 작품 저장 API")
     public ResponseEntity<?> saveInventory(
             @RequestBody SaveInventoryDTO storedStatusInfo,
             HttpServletRequest request

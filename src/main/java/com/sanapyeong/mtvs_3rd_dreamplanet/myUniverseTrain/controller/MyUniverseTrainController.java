@@ -4,6 +4,9 @@ import com.sanapyeong.mtvs_3rd_dreamplanet.ResponseMessage;
 import com.sanapyeong.mtvs_3rd_dreamplanet.component.UserTokenStorage;
 import com.sanapyeong.mtvs_3rd_dreamplanet.myUniverseTrain.dto.MyUniverseTrainFindResponseDTO;
 import com.sanapyeong.mtvs_3rd_dreamplanet.myUniverseTrain.services.MyUniverseTrainService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +40,7 @@ public class MyUniverseTrainController {
     }
 
     @GetMapping("/my-universe-trains")
+    @Operation(summary = "나만의 우주 열차 조회", description = "유저 아이디를 통한 나만의 우주 열차 조회 API")
     public ResponseEntity<?> findMyUniverseTrainByUserId(
             @RequestParam Long userId
     ){
@@ -67,6 +71,7 @@ public class MyUniverseTrainController {
     }
 
     @PostMapping("/my-universe-trains")
+    @Operation(summary = "나만의 우주 열차 생성", description = "나만의 우주 열차 생성 API")
     public ResponseEntity<?> createMyUniverseTrain(
             @RequestParam String trainName,
             HttpServletRequest request
@@ -96,6 +101,10 @@ public class MyUniverseTrainController {
     }
 
     @PatchMapping("/my-universe-trains/modifying-planet-order")
+    @Operation(summary = "행성 배치 순서 수정", description = "나만의 우주 열차 행성 배치 순서 수정 API")
+    @Parameters({
+            @Parameter(name="planetOrder", description = "행성 배치 순서. (앞에 List는 빼주세요!)", example = "[1, 2, 0, 0, 0]")
+    })
     public ResponseEntity<?> modifyPlanetOrder(
             @RequestParam String planetOrder,
             HttpServletRequest request
@@ -130,6 +139,10 @@ public class MyUniverseTrainController {
     }
 
     @PatchMapping("/my-universe-trains/modifying-planet-status")
+    @Operation(summary = "행성 배치 여부 수정", description = "나만의 우주 열차 행성 배치 여부 수정 API")
+    @Parameters({
+            @Parameter(name="planetStatus", description = "행성 배치 상태. (앞에 List는 빼주세요!)", example = "[true, true, false, false, false]")
+    })
     public ResponseEntity<?> modifyPlanetStatus(
             @RequestParam String planetStatus,
             HttpServletRequest request
