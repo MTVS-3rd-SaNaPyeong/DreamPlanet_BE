@@ -4,6 +4,7 @@ import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.dto.BlockInventoryFindRespo
 import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.dto.PostedLocationUpdateRequestDTO;
 import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.dto.SaveInventoryDTO;
 import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.entities.Inventory;
+import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.repositories.InventoryRepository;
 import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.services.InventoryService;
 import com.sanapyeong.mtvs_3rd_dreamplanet.ResponseMessage;
 import com.sanapyeong.mtvs_3rd_dreamplanet.component.UserTokenStorage;
@@ -23,6 +24,7 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Tag(name="Inventory Controller", description = "Inventory Controller")
 @RestController
@@ -32,14 +34,16 @@ public class InventoryController {
 
     private final InventoryService inventoryService;
     private final UserTokenStorage userTokenStorage;
+    private final InventoryRepository inventoryRepository;
 
     @Autowired
     public InventoryController(
             InventoryService inventoryService,
-            UserTokenStorage userTokenStorage
-    ) {
+            UserTokenStorage userTokenStorage,
+            InventoryRepository inventoryRepository) {
         this.inventoryService = inventoryService;
         this.userTokenStorage = userTokenStorage;
+        this.inventoryRepository = inventoryRepository;
     }
 
     @GetMapping("/inventories/block-inventory")
@@ -128,26 +132,55 @@ public class InventoryController {
         }
     }
 
-//    @PatchMapping("/inventories")
-//    public ResponseEntity<?> updatePostedLocation(
-//            @RequestBody PostedLocationUpdateRequestDTO postedLocationInfo,
-//            HttpServletRequest request
-//    ){
-//        // Response Message 기본 세팅
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-//        Map<String, Object> responseMap = new HashMap<>();
-//
-//        // 헤더에서 토큰 추출
-//        String authorizationHeader = request.getHeader("Authorization");
-//        System.out.println("Authorization header: " + authorizationHeader);
-//
-//        // User Token Storage에서 해당 토큰에 맞는 유저 식별
-//        Long userId = userTokenStorage.getToken(authorizationHeader);
-//        // 만약 입력된 토큰에 해당하는 유저가 없다면
-//        if (userId == null) {
-//            ResponseMessage responseMessage = new ResponseMessage(401, "사용자 없음", responseMap);
-//            return new ResponseEntity<>(responseMessage, headers, HttpStatus.UNAUTHORIZED);
-//        }
-//    }
+    @PatchMapping("/inventories")
+    public ResponseEntity<?> updatePostedLocation(
+            @RequestBody PostedLocationUpdateRequestDTO postedLocationInfo,
+            HttpServletRequest request
+    ){
+        // Response Message 기본 세팅
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+        Map<String, Object> responseMap = new HashMap<>();
+
+        // 헤더에서 토큰 추출
+        String authorizationHeader = request.getHeader("Authorization");
+        System.out.println("Authorization header: " + authorizationHeader);
+
+        // User Token Storage에서 해당 토큰에 맞는 유저 식별
+        Long userId = userTokenStorage.getToken(authorizationHeader);
+        // 만약 입력된 토큰에 해당하는 유저가 없다면
+        if (userId == null) {
+            ResponseMessage responseMessage = new ResponseMessage(401, "사용자 없음", responseMap);
+            return new ResponseEntity<>(responseMessage, headers, HttpStatus.UNAUTHORIZED);
+        }
+
+        // 변경 전 작품 ID와 변경하려는 작품 ID가 같은 경우
+        if(Objects.equals(postedLocationInfo.getPrevId(), postedLocationInfo.getNextId())){
+            ResponseMessage responseMessage = new ResponseMessage(200, "변경 내용 없음", responseMap);
+            return new ResponseEntity<>(responseMessage, headers, HttpStatus.OK);
+        }else if(postedLocationInfo.getPrevId() == 0L){
+            //변경하려는 작품의 위치가 비어있는 경우
+
+            Inventory inventory =
+                    inventoryService.findInventoryById(postedLocationInfo.getNextId());
+
+            inventoryService.updatePostedLocation(inventory.getId(), postedLocationInfo.getPostedLocation());
+
+        }else{
+            // 변경하려는 작품의 위치가 차있고, 이전 작품과 이후 작품이 다른 경우
+
+            Inventory prevInventory =
+                    inventoryService.findInventoryById(postedLocationInfo.getPrevId());
+
+            Inventory nextInventory =
+                    inventoryService.findInventoryById(postedLocationInfo.getNextId());
+
+            inventoryService.updatePostedLocation(prevInventory.getId(), 0L);
+
+            inventoryService.updatePostedLocation(nextInventory.getId(), postedLocationInfo.getPostedLocation());
+        }
+
+        ResponseMessage responseMessage = new ResponseMessage(200, "변경 완료", responseMap);
+        return new ResponseEntity<>(responseMessage, headers, HttpStatus.OK);
+    }
 }
