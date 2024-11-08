@@ -19,6 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 @EntityListeners(AuditingEntityListener.class)
 public class BlockInventoryFindResponseDTO {
 
+    // inventory id
+    private Long id;
+
     // 작품이 만들어진 행성 번호
     private Long playedPlanetId;
 
@@ -31,14 +34,17 @@ public class BlockInventoryFindResponseDTO {
 
     public BlockInventoryFindResponseDTO(Object[] result) {
 
+        //inventoryId
+        this.id = (Long) result[0];
+
         // playedPlanetId
-        this.playedPlanetId = (Long) result[0];
+        this.playedPlanetId = (Long) result[1];
 
         // postedLocation
-        this.postedLocation = (Long) result[1];
+        this.postedLocation = (Long) result[2];
 
         // completedWork
-        this.completedWork = (String) result[2];
+        this.completedWork = (String) result[3];
 
     }
 
