@@ -1,7 +1,7 @@
 {
   "AWSEBDockerrunVersion": "1",
   "Image": {
-    "Name":  "221082200491.dkr.ecr.ap-northeast-2.amazonaws.com/dream-planet",
+    "Name":  "221082200491.dkr.ecr.ap-northeast-2.amazonaws.com/dream-planet:dream-planet",
     "Update": "true"
   },
   "Ports": [
