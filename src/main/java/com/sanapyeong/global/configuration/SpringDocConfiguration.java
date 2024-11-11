@@ -21,22 +21,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
                 version = "v1")
 )
 public class SpringDocConfiguration {
-//    private SecurityScheme createAPIKeyScheme() {
-//        return new SecurityScheme().type(SecurityScheme.Type.HTTP)
-//                .bearerFormat("JWT")
-//                .scheme("bearer");
-//    }
-//
-//    @Bean
-//    public OpenAPI openAPI() {
-//        return new OpenAPI().addSecurityItem(new SecurityRequirement().
-//                        addList("Bearer Authentication"))
-//                .components(new Components().addSecuritySchemes
-//                        ("Bearer Authentication", createAPIKeyScheme()))
-//                .info(new io.swagger.v3.oas.models.info.Info().title("Dream Planet API")
-//                        .description("Dream Planet의 API 문서입니다.")
-//                        .version("1.0.0"));
-//    }
 
     private static final SecurityScheme apiKey = new SecurityScheme()
             .type(SecurityScheme.Type.HTTP)
@@ -54,14 +38,4 @@ public class SpringDocConfiguration {
                 .addSecurityItem(securityRequirement);
     }
 
-//    @Bean
-//    public GroupedOpenApi dev(){
-//        String[] path = {"/v1/**"};
-//
-//        return GroupedOpenApi
-//                .builder()
-//                .group("Dream Planet Swagger v1-dev")
-//                .pathsToMatch(path)
-//                .build();
-//    }
 }

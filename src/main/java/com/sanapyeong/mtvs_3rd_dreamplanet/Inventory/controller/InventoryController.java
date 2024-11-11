@@ -133,6 +133,7 @@ public class InventoryController {
     }
 
     @PatchMapping("/inventories")
+    @Operation(summary = "전시 작품 변경", description = "전시 작품 변경 API")
     public ResponseEntity<?> updatePostedLocation(
             @RequestBody PostedLocationUpdateRequestDTO postedLocationInfo,
             HttpServletRequest request
