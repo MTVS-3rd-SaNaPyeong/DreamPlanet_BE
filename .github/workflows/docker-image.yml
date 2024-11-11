@@ -18,11 +18,13 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
+        
     - name: Set YML
       run: |
         mkdir -p src/main/resources
         echo "${{ secrets.APPLICATION_DEV_YML }}"  | base64 --decode > src/main/resources/application-dev.yml
         find src
+        
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
 
@@ -43,6 +45,8 @@ jobs:
     - name: Build, tag, and push image to Amazon ECR
       id: build-image
       env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: dream-planet
         IMAGE_TAG: dream-planet
@@ -59,6 +63,9 @@ jobs:
         utcOffset: "+09:00"
 
     - name: Generate deployment package
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       run: |
         mkdir -p deploy
         cp Dockerrun.aws.json deploy/Dockerrun.aws.json
