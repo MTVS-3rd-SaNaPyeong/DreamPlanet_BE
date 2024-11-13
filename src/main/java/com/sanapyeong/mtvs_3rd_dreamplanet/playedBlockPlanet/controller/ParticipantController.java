@@ -25,6 +25,7 @@ import java.util.Map;
 @RestController
 //@RequiredArgsConstructor
 @RequestMapping("/v1/dev")
+@CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 public class ParticipantController {
 
     private final ParticipantService participantService;

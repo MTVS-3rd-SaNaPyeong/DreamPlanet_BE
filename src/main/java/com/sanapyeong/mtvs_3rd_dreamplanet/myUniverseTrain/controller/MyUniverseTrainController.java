@@ -25,6 +25,7 @@ import java.util.Map;
 @Tag(name="My Universe Train Controller", description = "My Universe Train Controller")
 @RestController
 @RequestMapping("/v1/dev")
+@CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 public class MyUniverseTrainController {
 
     private final MyUniverseTrainService myUniverseTrainService;
