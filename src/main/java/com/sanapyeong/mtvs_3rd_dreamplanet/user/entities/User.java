@@ -1,6 +1,7 @@
 package com.sanapyeong.mtvs_3rd_dreamplanet.user.entities;
 
 import com.sanapyeong.global.database.utils.EntityTimestamp;
+import com.sanapyeong.mtvs_3rd_dreamplanet.user.enums.UserColor;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -36,9 +37,13 @@ public class User extends EntityTimestamp {
     // 유저 비밀번호 -> 해시함수 적용 필요
     private String loginPw;
 
-    public User(String nickname, String loginId, String loginPw) {
+    // 유저 캐릭터 색상
+    private UserColor color;
+
+    public User(String nickname, String loginId, String loginPw, UserColor color) {
         this.nickname = nickname;
         this.loginId = loginId;
         this.loginPw = loginPw;
+        this.color = color;
     }
 }
