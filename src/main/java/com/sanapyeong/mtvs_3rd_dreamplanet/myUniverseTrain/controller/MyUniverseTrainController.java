@@ -3,6 +3,7 @@ package com.sanapyeong.mtvs_3rd_dreamplanet.myUniverseTrain.controller;
 import com.sanapyeong.mtvs_3rd_dreamplanet.ResponseMessage;
 import com.sanapyeong.mtvs_3rd_dreamplanet.component.UserTokenStorage;
 import com.sanapyeong.mtvs_3rd_dreamplanet.myUniverseTrain.dto.MyUniverseTrainFindResponseDTO;
+import com.sanapyeong.mtvs_3rd_dreamplanet.myUniverseTrain.dto.MyUniverseTrainSummaryFindResponseDTO;
 import com.sanapyeong.mtvs_3rd_dreamplanet.myUniverseTrain.services.MyUniverseTrainService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Tag(name="My Universe Train Controller", description = "My Universe Train Controller")
@@ -100,6 +102,26 @@ public class MyUniverseTrainController {
         responseMap.put("myUniverseTrain", findResult);
 
         ResponseMessage responseMessage = new ResponseMessage(200, "열차 정보 반환 성공", responseMap);
+        return new ResponseEntity<>(responseMessage, headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/my-universe-trains/searching")
+    @Operation(summary = "나만의 우주 열차 검색", description = "열차 이름 또는 고유 코드로 우주 열차 검색")
+    public ResponseEntity<?> findMyUniverseTrainBySearchWord(
+            @RequestParam String searchWord
+    ){
+        // Response Message 기본 세팅
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+        Map<String, Object> responseMap = new HashMap<>();
+
+        List<MyUniverseTrainSummaryFindResponseDTO> foundList = null;
+
+        foundList = myUniverseTrainService.findMyUniverseTrainsBySearchWord(searchWord);
+
+        responseMap.put("myUniverseTrainList", foundList);
+
+        ResponseMessage responseMessage = new ResponseMessage(200, "열차 검색 성공", responseMap);
         return new ResponseEntity<>(responseMessage, headers, HttpStatus.OK);
     }
 
