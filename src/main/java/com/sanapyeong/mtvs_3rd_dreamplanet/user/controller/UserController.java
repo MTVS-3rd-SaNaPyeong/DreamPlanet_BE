@@ -6,6 +6,7 @@ import com.sanapyeong.mtvs_3rd_dreamplanet.component.UserTokenStorage;
 import com.sanapyeong.mtvs_3rd_dreamplanet.user.dto.UserLoginDTO;
 import com.sanapyeong.mtvs_3rd_dreamplanet.user.dto.UserSignUpDTO;
 import com.sanapyeong.mtvs_3rd_dreamplanet.user.entities.User;
+import com.sanapyeong.mtvs_3rd_dreamplanet.user.enums.UserColor;
 import com.sanapyeong.mtvs_3rd_dreamplanet.user.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -59,7 +60,8 @@ public class UserController {
         User user = new User(
                 userInfo.getNickname(),
                 userInfo.getLoginId(),
-                BCrypt.hashpw(userInfo.getLoginPw(), BCrypt.gensalt())
+                BCrypt.hashpw(userInfo.getLoginPw(), BCrypt.gensalt()),
+                UserColor.BLUE
         );
 
         try {
@@ -106,6 +108,9 @@ public class UserController {
 
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + token);
 
+        responseMap.put("nickname", user.getNickname());
+        responseMap.put("color", user.getColor());
+
         ResponseMessage responseMessage = new ResponseMessage(200, "로그인 성공", responseMap);
         return new ResponseEntity<>(responseMessage, headers, HttpStatus.OK);
     }
@@ -128,6 +133,32 @@ public class UserController {
         userTokenStorage.removeToken(authorizationHeader);
 
         ResponseMessage responseMessage = new ResponseMessage(200, "로그아웃 성공", responseMap);
+        return new ResponseEntity<>(responseMessage, headers, HttpStatus.OK);
+    }
+
+    @PatchMapping("/color-changing")
+    @Operation(summary = "유저 캐릭터 색상 변경", description = "유저 캐릭터 색상 변경 API")
+    public ResponseEntity<?> changeUserColor(
+            @RequestParam UserColor color,
+            HttpServletRequest request
+    ){
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+        Map<String, Object> responseMap = new HashMap<>();
+
+        String authorizationHeader = request.getHeader("Authorization");
+        System.out.println("Authorization header: " + authorizationHeader);
+
+        // User Token Storage에서 해당 토큰에 맞는 유저 식별
+        Long userId = userTokenStorage.getToken(authorizationHeader);
+
+        User user = userService.findUserById(userId);
+
+        userService.modifyUserColor(user, color);
+
+        responseMap.put("color", user.getColor());
+
+        ResponseMessage responseMessage = new ResponseMessage(200, "색상 변경 성공", responseMap);
         return new ResponseEntity<>(responseMessage, headers, HttpStatus.OK);
     }
 }

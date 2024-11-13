@@ -149,4 +149,27 @@ public class MyUniverseTrainService {
             throw new IllegalArgumentException("해당 유저의 우주 열차가 존재하지 않습니다.");
         }
     }
+
+    public MyUniverseTrainFindResponseDTO findById(Long id) throws IOException{
+
+        Optional<MyUniverseTrain> optionalMyUniverseTrain
+                = myUniverseTrainRepository.findById(id);
+
+        MyUniverseTrain myUniverseTrain = optionalMyUniverseTrain.get();
+
+        List<BlockInventoryFindResponseDTO> blockTrainInfo
+                = inventoryRepository.findBlockInventoryByUserId(myUniverseTrain.getUserId())
+                .stream()
+                .map(BlockInventoryFindResponseDTO::new)
+                .toList();
+
+        MyUniverseTrainFindResponseDTO findResult
+                = new MyUniverseTrainFindResponseDTO(
+                myUniverseTrain.getPlanetStatus(),
+                myUniverseTrain.getPlanetOrder(),
+                blockTrainInfo
+        );
+
+        return findResult;
+    }
 }
