@@ -42,13 +42,20 @@ public class MyUniverseTrainController {
 
     @GetMapping("/my-universe-trains")
     @Operation(summary = "나만의 우주 열차 조회", description = "유저 아이디를 통한 나만의 우주 열차 조회 API")
-    public ResponseEntity<?> findMyUniverseTrainByUserId(
-            @RequestParam Long userId
+    public ResponseEntity<?> findMyUniverseTrainByToken(
+            HttpServletRequest request
     ){
         // Response Message 기본 세팅
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
         Map<String, Object> responseMap = new HashMap<>();
+
+        // 헤더에서 토큰 추출
+        String authorizationHeader = request.getHeader("Authorization");
+        System.out.println("Authorization header: " + authorizationHeader);
+
+        // User Token Storage에서 해당 토큰에 맞는 유저 식별
+        Long userId = userTokenStorage.getToken(authorizationHeader);
 
         // 만약 입력된 토큰에 해당하는 유저가 없다면
         if (userId == null) {
@@ -56,10 +63,35 @@ public class MyUniverseTrainController {
             return new ResponseEntity<>(responseMessage, headers, HttpStatus.NOT_FOUND);
         }
 
-        MyUniverseTrainFindResponseDTO findResult =
-                null;
+        MyUniverseTrainFindResponseDTO findResult = null;
+
         try {
             findResult = myUniverseTrainService.findMyUniverseTrainByUserId(userId);
+        } catch (IOException e) {
+            ResponseMessage responseMessage = new ResponseMessage(404, "열차 없음", responseMap);
+            return new ResponseEntity<>(responseMessage, headers, HttpStatus.NOT_FOUND);
+        }
+
+        responseMap.put("myUniverseTrain", findResult);
+
+        ResponseMessage responseMessage = new ResponseMessage(200, "열차 정보 반환 성공", responseMap);
+        return new ResponseEntity<>(responseMessage, headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/my-universe-trains/{id}")
+    @Operation(summary="타인의 우주 열차로 이동", description = "다른 유저 우주 열차 조회 API")
+    public ResponseEntity<?> findMyUniverseTrainByTrainId(
+            @PathVariable Long id
+    ){
+        // Response Message 기본 세팅
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+        Map<String, Object> responseMap = new HashMap<>();
+
+        MyUniverseTrainFindResponseDTO findResult = null;
+
+        try {
+            findResult = myUniverseTrainService.findById(id);
         } catch (IOException e) {
             ResponseMessage responseMessage = new ResponseMessage(404, "열차 없음", responseMap);
             return new ResponseEntity<>(responseMessage, headers, HttpStatus.NOT_FOUND);
