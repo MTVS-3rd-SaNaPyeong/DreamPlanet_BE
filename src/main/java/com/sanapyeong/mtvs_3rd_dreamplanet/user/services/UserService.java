@@ -1,9 +1,14 @@
 package com.sanapyeong.mtvs_3rd_dreamplanet.user.services;
 
+import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.entities.Inventory;
 import com.sanapyeong.mtvs_3rd_dreamplanet.user.entities.User;
+import com.sanapyeong.mtvs_3rd_dreamplanet.user.enums.UserColor;
 import com.sanapyeong.mtvs_3rd_dreamplanet.user.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -26,5 +31,13 @@ public class UserService {
 
     public void registerUser(User user) {
         userRepository.save(user);
+    }
+
+    @Transactional
+    public void modifyUserColor(User user, UserColor color) {
+
+        if (color != null) {
+            user.setColor(color);
+        }
     }
 }
