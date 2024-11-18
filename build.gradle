@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.3.4'
     id 'io.spring.dependency-management' version '1.1.6'
+    id "io.sentry.jvm.gradle" version "4.13.0"
 }
 
 group = 'com.sanapyeong'
@@ -21,6 +22,17 @@ configurations {
 
 repositories {
     mavenCentral()
+}
+
+sentry {
+    // Generates a JVM (Java, Kotlin, etc.) source bundle and uploads your source code to Sentry.
+    // This enables source context, allowing you to see your source
+    // code as part of your stack traces in Sentry.
+    includeSourceContext = true
+
+    org = "private-user-7s"
+    projectName = "java-spring-boot"
+    authToken = "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"
 }
 
 dependencies {
@@ -56,6 +68,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.springframework.boot:spring-boot-starter-test'
 
+    implementation 'io.sentry:sentry-spring-boot-starter:6.27.0'
 }
 
 tasks.named('test') {
