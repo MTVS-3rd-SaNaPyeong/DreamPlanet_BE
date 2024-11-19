@@ -6,6 +6,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name="TBL_INVENTORY")
 @Getter
@@ -32,15 +35,18 @@ public class Inventory extends EntityTimestamp {
     // 저장 여부
     private Boolean storedStatus;
 
-    // 게시판에서 게시된 위치 (좌상단부터 1 ~ 우하단 n)
-    // 미게시된 작품의 번호는 0으로 설정
-    private Long postedLocation;
+//    // 게시판에서 게시된 위치 (좌상단부터 1 ~ 우하단 n)
+//    // 미게시된 작품의 번호는 0으로 설정
+//    private Long postedLocation;
+
+//    @ElementCollection
+//    private List<Long> myUniverseTrainList;
 
     public Inventory(Long userId, PlanetType planetType, Long playedPlanetId, Boolean storedStatus) {
         this.userId = userId;
         this.planetType = planetType;
         this.playedPlanetId = playedPlanetId;
         this.storedStatus = storedStatus;
-        this.postedLocation = 0L;
+//        this.postedLocation = 0L;
     }
 }

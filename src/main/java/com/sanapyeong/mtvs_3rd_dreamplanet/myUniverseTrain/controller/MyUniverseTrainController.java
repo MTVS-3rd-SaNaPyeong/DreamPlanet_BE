@@ -44,7 +44,7 @@ public class MyUniverseTrainController {
 
     @GetMapping("/my-universe-trains")
     @Operation(summary = "나만의 우주 열차 조회", description = "유저 아이디를 통한 나만의 우주 열차 조회 API")
-    public ResponseEntity<?> findMyUniverseTrainByToken(
+    public ResponseEntity<?> findMyUniverseTrainsByToken(
             HttpServletRequest request
     ){
         // Response Message 기본 세팅
@@ -65,16 +65,16 @@ public class MyUniverseTrainController {
             return new ResponseEntity<>(responseMessage, headers, HttpStatus.NOT_FOUND);
         }
 
-        MyUniverseTrainFindResponseDTO findResult = null;
+        List<MyUniverseTrainFindResponseDTO> findResultList = null;
 
         try {
-            findResult = myUniverseTrainService.findMyUniverseTrainByUserId(userId);
+            findResultList = myUniverseTrainService.findMyUniverseTrainsByUserId(userId);
         } catch (IOException e) {
             ResponseMessage responseMessage = new ResponseMessage(404, "열차 없음", responseMap);
             return new ResponseEntity<>(responseMessage, headers, HttpStatus.NOT_FOUND);
         }
 
-        responseMap.put("myUniverseTrain", findResult);
+        responseMap.put("myUniverseTrainList", findResultList);
 
         ResponseMessage responseMessage = new ResponseMessage(200, "열차 정보 반환 성공", responseMap);
         return new ResponseEntity<>(responseMessage, headers, HttpStatus.OK);
@@ -162,6 +162,7 @@ public class MyUniverseTrainController {
     })
     public ResponseEntity<?> modifyPlanetOrder(
             @RequestParam String planetOrder,
+            @RequestParam Long myUniverseTrainId,
             HttpServletRequest request
     ){
         // Response Message 기본 세팅
@@ -183,7 +184,7 @@ public class MyUniverseTrainController {
         }
 
         try {
-            myUniverseTrainService.modifyPlanetOrder(userId, planetOrder);
+            myUniverseTrainService.modifyPlanetOrder(userId, planetOrder, myUniverseTrainId);
         } catch (Exception e) {
             ResponseMessage responseMessage = new ResponseMessage(400, "잘못된 요청입니다", responseMap);
             return new ResponseEntity<>(responseMessage, headers, HttpStatus.BAD_REQUEST);
@@ -200,6 +201,7 @@ public class MyUniverseTrainController {
     })
     public ResponseEntity<?> modifyPlanetStatus(
             @RequestParam String planetStatus,
+            @RequestParam Long myUniverseTrainId,
             HttpServletRequest request
     ){
         // Response Message 기본 세팅
@@ -221,7 +223,7 @@ public class MyUniverseTrainController {
         }
 
         try {
-            myUniverseTrainService.modifyPlanetStatus(userId, planetStatus);
+            myUniverseTrainService.modifyPlanetStatus(userId, planetStatus, myUniverseTrainId);
         } catch (Exception e) {
             ResponseMessage responseMessage = new ResponseMessage(400, "잘못된 요청입니다", responseMap);
             return new ResponseEntity<>(responseMessage, headers, HttpStatus.BAD_REQUEST);

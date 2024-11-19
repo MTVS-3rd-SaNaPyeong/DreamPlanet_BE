@@ -16,10 +16,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 
@@ -38,22 +35,52 @@ public class MyUniverseTrainService {
         this.inventoryRepository = inventoryRepository;
     }
 
-    public MyUniverseTrainFindResponseDTO findMyUniverseTrainByUserId(Long userId) throws IOException {
+    public List<MyUniverseTrainFindResponseDTO> findMyUniverseTrainsByUserId(Long userId) throws IOException {
 
-        MyUniverseTrain myUniverseTrain
-                = myUniverseTrainRepository.findMyUniverseTrainByUserId(userId);
+        List<MyUniverseTrain> myUniverseTrainList
+                = myUniverseTrainRepository.findMyUniverseTrainsByUserId(userId);
+
+        List<MyUniverseTrainFindResponseDTO> findResultList = new ArrayList<>();
+
+        for(MyUniverseTrain myUniverseTrain : myUniverseTrainList){
+
+            List<BlockInventoryFindResponseDTO> blockTrainInfo
+                    = inventoryRepository.findBlockInventoryByUserIdAndMyUniverseTrainId(userId, myUniverseTrain.getId())
+                    .stream()
+                    .map(BlockInventoryFindResponseDTO::new)
+                    .toList();
+
+            MyUniverseTrainFindResponseDTO findResult
+                    = new MyUniverseTrainFindResponseDTO(
+                    myUniverseTrain.getPlanetStatus(),
+                    myUniverseTrain.getPlanetOrder(),
+                    blockTrainInfo
+            );
+
+            findResultList.add(findResult);
+        }
+
+        return findResultList;
+    }
+
+    public MyUniverseTrainFindResponseDTO findById(Long id) throws IOException{
+
+        Optional<MyUniverseTrain> optionalMyUniverseTrain
+                = myUniverseTrainRepository.findById(id);
+
+        MyUniverseTrain myUniverseTrain = optionalMyUniverseTrain.get();
 
         List<BlockInventoryFindResponseDTO> blockTrainInfo
-                = inventoryRepository.findBlockInventoryByUserId(userId)
+                = inventoryRepository.findBlockInventoryByUserIdAndMyUniverseTrainId(myUniverseTrain.getUserId(), myUniverseTrain.getId())
                 .stream()
                 .map(BlockInventoryFindResponseDTO::new)
                 .toList();
 
         MyUniverseTrainFindResponseDTO findResult
                 = new MyUniverseTrainFindResponseDTO(
-                        myUniverseTrain.getPlanetStatus(),
-                        myUniverseTrain.getPlanetOrder(),
-                        blockTrainInfo
+                myUniverseTrain.getPlanetStatus(),
+                myUniverseTrain.getPlanetOrder(),
+                blockTrainInfo
         );
 
         return findResult;
@@ -93,10 +120,13 @@ public class MyUniverseTrainService {
     @Transactional
     public void modifyPlanetOrder(
             Long userId,
-            String planetOrder
+            String planetOrder,
+            Long myUniverseTrainId
     ) {
 
-        MyUniverseTrain myUniverseTrain = myUniverseTrainRepository.findMyUniverseTrainByUserId(userId);
+        Optional<MyUniverseTrain> optionalMyUniverseTrain = myUniverseTrainRepository.findById(myUniverseTrainId);
+
+        MyUniverseTrain myUniverseTrain = optionalMyUniverseTrain.get();
 
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -124,9 +154,13 @@ public class MyUniverseTrainService {
     @Transactional
     public void modifyPlanetStatus(
             Long userId,
-            String planetStatus) {
+            String planetStatus,
+            Long myUniverseTrainId
+    ) {
 
-        MyUniverseTrain myUniverseTrain = myUniverseTrainRepository.findMyUniverseTrainByUserId(userId);
+        Optional<MyUniverseTrain> optionalMyUniverseTrain = myUniverseTrainRepository.findById(myUniverseTrainId);
+
+        MyUniverseTrain myUniverseTrain = optionalMyUniverseTrain.get();
 
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -151,29 +185,6 @@ public class MyUniverseTrainService {
             System.out.println("해당 유저의 우주 열차가 존재하지 않습니다.");
             throw new IllegalArgumentException("해당 유저의 우주 열차가 존재하지 않습니다.");
         }
-    }
-
-    public MyUniverseTrainFindResponseDTO findById(Long id) throws IOException{
-
-        Optional<MyUniverseTrain> optionalMyUniverseTrain
-                = myUniverseTrainRepository.findById(id);
-
-        MyUniverseTrain myUniverseTrain = optionalMyUniverseTrain.get();
-
-        List<BlockInventoryFindResponseDTO> blockTrainInfo
-                = inventoryRepository.findBlockInventoryByUserId(myUniverseTrain.getUserId())
-                .stream()
-                .map(BlockInventoryFindResponseDTO::new)
-                .toList();
-
-        MyUniverseTrainFindResponseDTO findResult
-                = new MyUniverseTrainFindResponseDTO(
-                myUniverseTrain.getPlanetStatus(),
-                myUniverseTrain.getPlanetOrder(),
-                blockTrainInfo
-        );
-
-        return findResult;
     }
 
     public List<MyUniverseTrainSummaryFindResponseDTO> findMyUniverseTrainsBySearchWord(String searchWord) {

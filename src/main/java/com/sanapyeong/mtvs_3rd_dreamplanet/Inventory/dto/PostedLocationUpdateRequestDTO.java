@@ -20,6 +20,9 @@ public class PostedLocationUpdateRequestDTO {
     // 변경할 작품의 inventory id
     private Long nextId;
 
+    // 우주열차 id
+    private Long myUniverseTrainId;
+
     // 변경할 위치
     private Long postedLocation;
 

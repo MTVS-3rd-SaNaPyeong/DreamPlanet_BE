@@ -4,6 +4,7 @@ import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.dto.BlockInventoryFindRespo
 import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.dto.SaveInventoryDTO;
 import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.entities.Inventory;
 import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.repositories.InventoryRepository;
+import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.repositories.PostingInfoRepository;
 import com.sanapyeong.mtvs_3rd_dreamplanet.playedBlockPlanet.entities.PlayedBlockPlanet;
 import com.sanapyeong.mtvs_3rd_dreamplanet.playedBlockPlanet.repositories.PlayedBlockPlanetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,18 +19,21 @@ public class InventoryService {
 
     private final InventoryRepository inventoryRepository;
     private final PlayedBlockPlanetRepository playedBlockPlanetRepository;
+    private final PostingInfoRepository postingInfoRepository;
 
     @Autowired
     public InventoryService(
             InventoryRepository inventoryRepository,
-            PlayedBlockPlanetRepository playedBlockPlanetRepository
+            PlayedBlockPlanetRepository playedBlockPlanetRepository,
+            PostingInfoRepository postingInfoRepository
     ) {
         this.inventoryRepository = inventoryRepository;
         this.playedBlockPlanetRepository = playedBlockPlanetRepository;
+        this.postingInfoRepository = postingInfoRepository;
     }
 
     @Transactional
-    public void saveInventory(Long userId, SaveInventoryDTO storedStatusInfo) {
+    public Long saveInventory(Long userId, SaveInventoryDTO storedStatusInfo) {
 
         Inventory inventory = new Inventory(
                 userId,
@@ -38,16 +42,18 @@ public class InventoryService {
                 storedStatusInfo.getStoredStatus()
         );
 
-        inventoryRepository.save(inventory);
+        return inventoryRepository.save(inventory).getId();
     }
 
-    public List<BlockInventoryFindResponseDTO> findBlockInventoryByUserId(Long userId) {
+    public List<BlockInventoryFindResponseDTO> findBlockInventoryByUserIdAndMyUniverseTrainId(
+            Long userId,
+            Long myUniverseTrainId
+    ) {
 
-        return inventoryRepository.findBlockInventoryByUserId(userId)
+        return inventoryRepository.findBlockInventoryByUserIdAndMyUniverseTrainId(userId, myUniverseTrainId)
                 .stream()
                 .map(BlockInventoryFindResponseDTO::new)
                 .toList();
-
     }
 
     public Inventory findInventoryById(Long nextId) {
@@ -55,23 +61,23 @@ public class InventoryService {
         return inventoryRepository.findById(nextId).orElseThrow();
     }
 
-    @Transactional
-    public void updatePostedLocation(Long id, Long postedLocation) {
-
-        Optional<Inventory> optionalInventory = inventoryRepository.findById(id);
-
-        // 엔티티가 존재하는지 확인
-        if (optionalInventory.isPresent()) {
-            Inventory inventory = optionalInventory.get();
-
-            // postedLocation 정보 업데이트
-            if (postedLocation != null) {
-                inventory.setPostedLocation(postedLocation);
-            }
-
-            // 자동으로 변경된 내용이 영속성 컨텍스트에 반영됨 (Transactional 덕분)
-        } else {
-            throw new IllegalArgumentException("ID에 해당하는 인벤토리가 존재하지 않습니다.");
-        }
-    }
+//    @Transactional
+//    public void updatePostedLocation(Long id, Long postedLocation) {
+//
+//        Optional<Inventory> optionalInventory = inventoryRepository.findById(id);
+//
+//        // 엔티티가 존재하는지 확인
+//        if (optionalInventory.isPresent()) {
+//            Inventory inventory = optionalInventory.get();
+//
+//            // postedLocation 정보 업데이트
+//            if (postedLocation != null) {
+//                inventory.setPostedLocation(postedLocation);
+//            }
+//
+//            // 자동으로 변경된 내용이 영속성 컨텍스트에 반영됨 (Transactional 덕분)
+//        } else {
+//            throw new IllegalArgumentException("ID에 해당하는 인벤토리가 존재하지 않습니다.");
+//        }
+//    }
 }

@@ -12,7 +12,7 @@ import java.util.List;
 public interface MyUniverseTrainRepository extends JpaRepository<MyUniverseTrain, Long> {
 
     @Query("SELECT m FROM MyUniverseTrain m WHERE m.userId = :userId")
-    MyUniverseTrain findMyUniverseTrainByUserId(Long userId);
+    List<MyUniverseTrain> findMyUniverseTrainsByUserId(Long userId);
 
     @Query("SELECT m.id, m.userId, m.trainName, m.uniqueCode " +
             "FROM MyUniverseTrain m " +
