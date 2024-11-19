@@ -5,12 +5,12 @@ import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.dto.PostedLocationUpdateReq
 import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.dto.SaveInventoryDTO;
 import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.entities.Inventory;
 import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.repositories.InventoryRepository;
+import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.repositories.PostingInfoRepository;
 import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.services.InventoryService;
+import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.services.PostingInfoService;
 import com.sanapyeong.mtvs_3rd_dreamplanet.ResponseMessage;
 import com.sanapyeong.mtvs_3rd_dreamplanet.component.UserTokenStorage;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,21 +34,22 @@ public class InventoryController {
 
     private final InventoryService inventoryService;
     private final UserTokenStorage userTokenStorage;
-    private final InventoryRepository inventoryRepository;
+    private final PostingInfoService postingInfoService;
 
     @Autowired
     public InventoryController(
             InventoryService inventoryService,
             UserTokenStorage userTokenStorage,
-            InventoryRepository inventoryRepository) {
+            PostingInfoService postingInfoService) {
         this.inventoryService = inventoryService;
         this.userTokenStorage = userTokenStorage;
-        this.inventoryRepository = inventoryRepository;
+        this.postingInfoService = postingInfoService;
     }
 
     @GetMapping("/inventories/block-inventory")
     @Operation(summary = "유저의 블록 행성 인벤토리 조회", description = "유저의 블록 행성 인벤토리 조회 API")
-    public ResponseEntity<?> findBlockInventoryByUserToken(
+    public ResponseEntity<?> findBlockInventoryByUserTokenAndMyUniverseTrainId(
+            @RequestParam Long myUniverseTrainId,
             HttpServletRequest request
     ){
         // Response Message 기본 세팅
@@ -68,7 +69,8 @@ public class InventoryController {
             return new ResponseEntity<>(responseMessage, headers, HttpStatus.UNAUTHORIZED);
         }
 
-        List<BlockInventoryFindResponseDTO> blockInventoryList = findBlockInventoryByUserId(userId);
+        List<BlockInventoryFindResponseDTO> blockInventoryList
+                = findBlockInventoryByUserIdAndMyUniverseTrainId(userId, myUniverseTrainId);
 
         responseMap.put("blockInventory", blockInventoryList);
 
@@ -79,19 +81,19 @@ public class InventoryController {
     // user id로 블록 행성 인벤토리 조회
     // 나만의 우주열차 입장 시, 게시 작품 정보 전달용
     //@GetMapping("/inventories")
-    public List<BlockInventoryFindResponseDTO> findBlockInventoryByUserId(
-            Long userId
+    public List<BlockInventoryFindResponseDTO> findBlockInventoryByUserIdAndMyUniverseTrainId(
+            Long userId,
+            Long myUniverseTrainId
     ){
 
         List<BlockInventoryFindResponseDTO> blockInventoryList;
 
         try {
-            blockInventoryList= inventoryService.findBlockInventoryByUserId(userId);
+            blockInventoryList= inventoryService.findBlockInventoryByUserIdAndMyUniverseTrainId(userId, myUniverseTrainId);
         } catch (Exception e) {
             return null;
         }
 
-        // playedPlanetId, postedLocation, completedWork
         return blockInventoryList;
     }
 
@@ -120,7 +122,10 @@ public class InventoryController {
 
         try {
             // 인벤토리에 저장
-            inventoryService.saveInventory(userId, storedStatusInfo);
+            Long inventoryId = inventoryService.saveInventory(userId, storedStatusInfo);
+
+            // PostingInfo에 각 myUniverseTrain과의 조합에 대해서 행 생성
+            postingInfoService.savePosingInfoByInventory(userId, inventoryId);
 
             // 정상적으로 저장되었을 경우
             ResponseMessage responseMessage = new ResponseMessage(201, "인벤토리 저장 성공", responseMap);
@@ -165,7 +170,9 @@ public class InventoryController {
             Inventory inventory =
                     inventoryService.findInventoryById(postedLocationInfo.getNextId());
 
-            inventoryService.updatePostedLocation(inventory.getId(), postedLocationInfo.getPostedLocation());
+            //inventoryService.updatePostedLocation(inventory.getId(), postedLocationInfo.getPostedLocation());
+
+            postingInfoService.updatePostingInfo(inventory.getId(), postedLocationInfo.getMyUniverseTrainId(), postedLocationInfo.getPostedLocation());
 
         }else{
             // 변경하려는 작품의 위치가 차있고, 이전 작품과 이후 작품이 다른 경우
@@ -176,9 +183,10 @@ public class InventoryController {
             Inventory nextInventory =
                     inventoryService.findInventoryById(postedLocationInfo.getNextId());
 
-            inventoryService.updatePostedLocation(prevInventory.getId(), 0L);
+            postingInfoService.updatePostingInfo(prevInventory.getId(), postedLocationInfo.getMyUniverseTrainId(), 0L);
 
-            inventoryService.updatePostedLocation(nextInventory.getId(), postedLocationInfo.getPostedLocation());
+            postingInfoService.updatePostingInfo(nextInventory.getId(), postedLocationInfo.getMyUniverseTrainId(), postedLocationInfo.getPostedLocation());
+
         }
 
         ResponseMessage responseMessage = new ResponseMessage(200, "변경 완료", responseMap);
