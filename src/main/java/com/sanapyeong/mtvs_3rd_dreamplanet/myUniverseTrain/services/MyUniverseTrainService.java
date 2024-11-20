@@ -52,10 +52,11 @@ public class MyUniverseTrainService {
 
             MyUniverseTrainFindResponseDTO findResult
                     = new MyUniverseTrainFindResponseDTO(
+                    myUniverseTrain.getTrainName(),
+                    myUniverseTrain.getUniqueCode(),
                     myUniverseTrain.getPlanetStatus(),
                     myUniverseTrain.getPlanetOrder(),
-                    blockTrainInfo
-            );
+                    blockTrainInfo);
 
             findResultList.add(findResult);
         }
@@ -78,6 +79,8 @@ public class MyUniverseTrainService {
 
         MyUniverseTrainFindResponseDTO findResult
                 = new MyUniverseTrainFindResponseDTO(
+                myUniverseTrain.getTrainName(),
+                myUniverseTrain.getUniqueCode(),
                 myUniverseTrain.getPlanetStatus(),
                 myUniverseTrain.getPlanetOrder(),
                 blockTrainInfo
