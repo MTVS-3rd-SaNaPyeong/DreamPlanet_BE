@@ -3,6 +3,7 @@ package com.sanapyeong.mtvs_3rd_dreamplanet.playedBlockPlanet.controller;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.sanapyeong.mtvs_3rd_dreamplanet.ResponseMessage;
 import com.sanapyeong.mtvs_3rd_dreamplanet.aiService.ImageGenerationService;
+import com.sanapyeong.mtvs_3rd_dreamplanet.aiService.PreSetCallService;
 import com.sanapyeong.mtvs_3rd_dreamplanet.aiService.PromptInspectionService;
 import com.sanapyeong.mtvs_3rd_dreamplanet.component.UserTokenStorage;
 import com.sanapyeong.mtvs_3rd_dreamplanet.playedBlockPlanet.dto.CompletedWorkSaveDTO;
@@ -10,9 +11,11 @@ import com.sanapyeong.mtvs_3rd_dreamplanet.playedBlockPlanet.dto.PlayedBlockPlan
 import com.sanapyeong.mtvs_3rd_dreamplanet.playedBlockPlanet.entities.PlayedBlockPlanet;
 import com.sanapyeong.mtvs_3rd_dreamplanet.playedBlockPlanet.services.PlayedBlockPlanetService;
 import com.sanapyeong.mtvs_3rd_dreamplanet.playedBlockPlanet.services.S3Service;
+import com.sanapyeong.mtvs_3rd_dreamplanet.playedBlockPlanet.services.TempBlockPlanetStorageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,6 +44,8 @@ public class PlayedBlockPlanetController {
     private final S3Service s3Service;
     private final PromptInspectionService promptInspectionService;
     private final ImageGenerationService imageGenerationService;
+    private final TempBlockPlanetStorageService tempBlockPlanetStorageService;
+    private final PreSetCallService preSetCallService;
 
     @Autowired
     public PlayedBlockPlanetController(
@@ -48,13 +53,17 @@ public class PlayedBlockPlanetController {
             UserTokenStorage userTokenStorage,
             S3Service s3Service,
             PromptInspectionService promptInspectionService,
-            ImageGenerationService imageGenerationService
+            ImageGenerationService imageGenerationService,
+            TempBlockPlanetStorageService tempBlockPlanetStorageService,
+            PreSetCallService preSetCallService
     ) {
         this.playedBlockPlanetService = playedBlockPlanetService;
         this.userTokenStorage = userTokenStorage;
         this.s3Service = s3Service;
         this.promptInspectionService = promptInspectionService;
         this.imageGenerationService = imageGenerationService;
+        this.tempBlockPlanetStorageService = tempBlockPlanetStorageService;
+        this.preSetCallService = preSetCallService;
     }
 
     // 플레이 할 블록 행성 생성
@@ -101,6 +110,44 @@ public class PlayedBlockPlanetController {
             return ResponseEntity.notFound().build();
         }
 
+//        // ai image 생성 요청 api
+//        // 성공 여부 반환
+//
+//        String translatedText = promptInspectionService.inspectPrompt(prompt);
+//
+//        if(translatedText == null){
+//            ResponseMessage responseMessage = new ResponseMessage(400, "올바르지 못한 프롬프트입니다.", responseMap);
+//            return new ResponseEntity<>(responseMessage, headers, HttpStatus.BAD_REQUEST);
+//        }
+//
+//        // 성공 시, 컬러 도트 이미지 및 흑백 도트 이미지 반환
+//        // 두 이미지 S3 서버에 저장 후 URL 주소 반환
+//        List<MultipartFile> dotImages = null;
+//
+//        try {
+//            dotImages = imageGenerationService.generateDotImage(translatedText);
+//        } catch (IOException e) {
+//            ResponseMessage responseMessage = new ResponseMessage(500, "컬러 및 흑백 도트 이미지 생성 실패", responseMap);
+//            return new ResponseEntity<>(responseMessage, headers, HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//
+//        MultipartFile colorDotImage = dotImages.get(0);
+//        MultipartFile blackAndWhiteDotImage = dotImages.get(1);
+//
+//        String colorDotImageURL = s3Service.saveColorDotImage(colorDotImage, playedBlockPlanetId);
+//        String blackAndWhiteDotImageURL = s3Service.saveBlackAndWhiteDotImage(blackAndWhiteDotImage, playedBlockPlanetId);
+//
+//        // 프롬프트 및 URL 주소 저장
+//        playedBlockPlanetService.savePrompt(playedBlockPlanetId, prompt);
+//        playedBlockPlanetService.saveColorDotImage(playedBlockPlanetId, colorDotImageURL);
+//        playedBlockPlanetService.saveBlackAndWhiteDotImage(playedBlockPlanetId, blackAndWhiteDotImageURL);
+//
+//
+//        responseMap.put("colorDotImage", colorDotImageURL);
+//        responseMap.put("blackAndWhiteDotImage", blackAndWhiteDotImageURL);
+
+
+
         // ai image 생성 요청 api
         // 성공 여부 반환
 
@@ -111,31 +158,50 @@ public class PlayedBlockPlanetController {
             return new ResponseEntity<>(responseMessage, headers, HttpStatus.BAD_REQUEST);
         }
 
+        // prompt 저장
+        playedBlockPlanetService.savePrompt(playedBlockPlanetId, prompt);
+
         // 성공 시, 컬러 도트 이미지 및 흑백 도트 이미지 반환
         // 두 이미지 S3 서버에 저장 후 URL 주소 반환
         List<MultipartFile> dotImages = null;
 
-        try {
-            dotImages = imageGenerationService.generateDotImage(translatedText);
-        } catch (IOException e) {
-            ResponseMessage responseMessage = new ResponseMessage(500, "컬러 및 흑백 도트 이미지 생성 실패", responseMap);
-            return new ResponseEntity<>(responseMessage, headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        // AI 호출을 통한 이미지 생성
+        for(int i = 1; i < 3; i++) {
+
+            try {
+                dotImages = imageGenerationService.generateDotImage(translatedText);
+            } catch (IOException e) {
+                ResponseMessage responseMessage = new ResponseMessage(500, "컬러 및 흑백 도트 이미지 생성 실패", responseMap);
+                return new ResponseEntity<>(responseMessage, headers, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+
+            MultipartFile colorDotImage = dotImages.get(0);
+            MultipartFile blackAndWhiteDotImage = dotImages.get(1);
+
+            String colorDotImageURL = s3Service.saveColorDotImage(colorDotImage, playedBlockPlanetId, (long) i);
+            String blackAndWhiteDotImageURL = s3Service.saveBlackAndWhiteDotImage(blackAndWhiteDotImage, playedBlockPlanetId, (long) i);
+
+            // URL 주소 저장
+            tempBlockPlanetStorageService.saveDotImageURL(playedBlockPlanetId, (long) i, colorDotImageURL, blackAndWhiteDotImageURL);
+
+            responseMap.put("colorDotImage" + i, colorDotImageURL);
+            responseMap.put("blackAndWhiteDotImage" + i, blackAndWhiteDotImageURL);
         }
+
+        // 프리셋 호출
+        dotImages = preSetCallService.generateDotImage();
 
         MultipartFile colorDotImage = dotImages.get(0);
         MultipartFile blackAndWhiteDotImage = dotImages.get(1);
 
-        String colorDotImageURL = s3Service.saveColorDotImage(colorDotImage, playedBlockPlanetId);
-        String blackAndWhiteDotImageURL = s3Service.saveBlackAndWhiteDotImage(blackAndWhiteDotImage, playedBlockPlanetId);
+        String colorDotImageURL = s3Service.saveColorDotImage(colorDotImage, playedBlockPlanetId, 3L);
+        String blackAndWhiteDotImageURL = s3Service.saveBlackAndWhiteDotImage(blackAndWhiteDotImage, playedBlockPlanetId, 3L);
 
-        // 프롬프트 및 URL 주소 저장
-        playedBlockPlanetService.savePrompt(playedBlockPlanetId, prompt);
-        playedBlockPlanetService.saveColorDotImage(playedBlockPlanetId, colorDotImageURL);
-        playedBlockPlanetService.saveBlackAndWhiteDotImage(playedBlockPlanetId, blackAndWhiteDotImageURL);
+        // URL 주소 저장
+        tempBlockPlanetStorageService.saveDotImageURL(playedBlockPlanetId, 3L, colorDotImageURL, blackAndWhiteDotImageURL);
 
-
-        responseMap.put("colorDotImage", colorDotImageURL);
-        responseMap.put("blackAndWhiteDotImage", blackAndWhiteDotImageURL);
+        responseMap.put("colorDotImage" + 3L, colorDotImageURL);
+        responseMap.put("blackAndWhiteDotImage" + 3L, blackAndWhiteDotImageURL);
 
         ResponseMessage responseMessage = new ResponseMessage(201, "컬러 및 흑백 도트 이미지 저장 성공", responseMap);
         return new ResponseEntity<>(responseMessage, headers, HttpStatus.CREATED);
@@ -178,4 +244,5 @@ public class PlayedBlockPlanetController {
         return new ResponseEntity<>(responseMessage, headers, HttpStatus.CREATED);
     }
 
+//    @GetMapping("/played-block-planet/preset-test")
 }

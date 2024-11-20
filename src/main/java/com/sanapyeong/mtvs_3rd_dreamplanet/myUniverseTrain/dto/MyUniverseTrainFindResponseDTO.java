@@ -15,7 +15,9 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 public class MyUniverseTrainFindResponseDTO {
 
-    // private String uniqueCode;
+    private String trainName;
+
+    private String uniqueCode;
 
     @Column(columnDefinition = "json")
     private String planetStatus;
