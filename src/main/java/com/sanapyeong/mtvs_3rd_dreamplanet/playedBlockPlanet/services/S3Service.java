@@ -47,28 +47,36 @@ public class S3Service {
         File uploadFile = convert(multipartFile)
                 .orElseThrow(() -> new IllegalArgumentException("error: MultipartFile -> File convert fail"));
 
-        return upload(uploadFile, COMPLETED_WORK_DIR, playedBlockPlanetId);
+        return upload(uploadFile, COMPLETED_WORK_DIR, playedBlockPlanetId, 0L);
     }
 
-    public String saveColorDotImage(MultipartFile multipartFile, Long playedBlockPlanetId) throws IOException{
+    public String saveColorDotImage(MultipartFile multipartFile, Long playedBlockPlanetId, Long index) throws IOException{
 
         File uploadFile = convert(multipartFile)
                 .orElseThrow(() -> new IllegalArgumentException("error: MultipartFile -> File convert fail"));
 
-        return upload(uploadFile, COLOR_DOT_IMAGE_DIR, playedBlockPlanetId);
+        return upload(uploadFile, COLOR_DOT_IMAGE_DIR, playedBlockPlanetId, index);
     }
 
-    public String saveBlackAndWhiteDotImage(MultipartFile multipartFile, Long playedBlockPlanetId) throws IOException{
+    public String saveBlackAndWhiteDotImage(MultipartFile multipartFile, Long playedBlockPlanetId, Long index) throws IOException{
 
         File uploadFile = convert(multipartFile)
                 .orElseThrow(() -> new IllegalArgumentException("error: MultipartFile -> File convert fail"));
 
-        return upload(uploadFile, BLACK_AND_WHITE_DOT_IMAGE_DIR, playedBlockPlanetId);
+        return upload(uploadFile, BLACK_AND_WHITE_DOT_IMAGE_DIR, playedBlockPlanetId, index);
     }
 
     // S3로 파일 업로드하기
-    private String upload(File uploadFile, String dirName, Long playedBlockPlanetId) {
-        String fileName = "dream-planet/" + playedBlockPlanetId + "/" + dirName + UUID.randomUUID() + uploadFile.getName();   // S3에 저장된 파일 이름
+    private String upload(File uploadFile, String dirName, Long playedBlockPlanetId, Long index) {
+        String fileName;
+
+        // CompletedWork를 upload 하는 경우
+        if(index == 0L) {
+            fileName = "dream-planet/" + playedBlockPlanetId + "/" + dirName + UUID.randomUUID() + uploadFile.getName();   // S3에 저장된 파일 이름
+        }else{ // ColorDotImage 및 BlackAndWhiteDotImage를 upload 하는 경우
+            fileName = "dream-planet/" + playedBlockPlanetId + "/" + dirName + index + "/" + UUID.randomUUID() + uploadFile.getName();   // S3에 저장된 파일 이름
+        }
+
         String uploadImageUrl = putS3(uploadFile, fileName); // s3로 업로드
         removeNewFile(uploadFile);
         return uploadImageUrl;
