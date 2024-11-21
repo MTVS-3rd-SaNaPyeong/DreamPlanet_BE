@@ -39,6 +39,8 @@ public class PlayedBlockPlanet extends EntityTimestamp {
     private String prompt;
 
     // 이미지는 AWS S3 서버에 저장한 후, 반환받은 URL 주소를 저장
+    private Long idx;
+
     // 컬러 도트 이미지
     private String colorDotImage;
     // 흑백 도트 이미지
