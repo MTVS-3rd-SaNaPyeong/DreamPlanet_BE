@@ -216,6 +216,34 @@ public class PlayedBlockPlanetController {
         return new ResponseEntity<>(responseMessage, headers, HttpStatus.CREATED);
     }
 
+    @PatchMapping("/played-block-planets/choice")
+    @Operation(summary = "도트 이미지 선택", description = "도트 이미지 세트 선택 API")
+    public ResponseEntity<?> choiceDotImage(
+            @RequestParam Long playedBlockPlanetId,
+            @RequestBody DotImageUrlFindResponseDTO dotImageUrl
+    ){
+        // Response Message 기본 세팅
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+        Map<String, Object> responseMap = new HashMap<>();
+
+        // 존재하는 played block planet인지 확인
+        PlayedBlockPlanet playedBlockPlanet = playedBlockPlanetService.findPlayedBlockPlanetById(playedBlockPlanetId);
+        if(playedBlockPlanet == null){
+            // 블록 행성 없음
+            ResponseMessage responseMessage = new ResponseMessage(404, "해당하는 블록 행성 플레이 없음", responseMap);
+            return new ResponseEntity<>(responseMessage, headers, HttpStatus.NOT_FOUND);
+        }
+
+        playedBlockPlanetService.saveIdx(playedBlockPlanetId, dotImageUrl.getIdx());
+        playedBlockPlanetService.saveColorDotImage(playedBlockPlanetId, dotImageUrl.getColorDotImageUrl());
+        playedBlockPlanetService.saveBlackAndWhiteDotImage(playedBlockPlanetId, dotImageUrl.getBlackAndWhiteDotImageUrl());
+
+        ResponseMessage responseMessage = new ResponseMessage(201, "도트 이미지 url 및 idx 저장 성공", responseMap);
+        return new ResponseEntity<>(responseMessage, headers, HttpStatus.CREATED);
+    }
+
+
     // 완성 작품 저장
     @PatchMapping(
             value = "/played-block-planets/completed-work",
