@@ -1,5 +1,6 @@
 package com.sanapyeong.mtvs_3rd_dreamplanet.myUniverseTrain.controller;
 
+import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.services.PostingInfoService;
 import com.sanapyeong.mtvs_3rd_dreamplanet.ResponseMessage;
 import com.sanapyeong.mtvs_3rd_dreamplanet.component.UserTokenStorage;
 import com.sanapyeong.mtvs_3rd_dreamplanet.myUniverseTrain.dto.MyUniverseTrainFindResponseDTO;
@@ -32,14 +33,17 @@ public class MyUniverseTrainController {
 
     private final MyUniverseTrainService myUniverseTrainService;
     private final UserTokenStorage userTokenStorage;
+    private final PostingInfoService postingInfoService;
 
     @Autowired
     public MyUniverseTrainController(
             MyUniverseTrainService myUniverseTrainService,
-            UserTokenStorage userTokenStorage
+            UserTokenStorage userTokenStorage,
+            PostingInfoService postingInfoService
     ){
         this.myUniverseTrainService = myUniverseTrainService;
         this.userTokenStorage = userTokenStorage;
+        this.postingInfoService = postingInfoService;
     }
 
     @GetMapping("/my-universe-trains")
@@ -149,7 +153,11 @@ public class MyUniverseTrainController {
             return new ResponseEntity<>(responseMessage, headers, HttpStatus.NOT_FOUND);
         }
 
-        myUniverseTrainService.createMyUniverseTrain(userId, trainName);
+        // 나만의 우주 열차 저장 후, 우주 열차 id 반환
+        Long myUniverseTrainId = myUniverseTrainService.createMyUniverseTrain(userId, trainName);
+
+        // PostingInfo에 각 myUniverseTrain과의 조합에 대해서 행 생성
+        postingInfoService.savePostingInfoByMyUniverseTrain(userId, myUniverseTrainId);
 
         ResponseMessage responseMessage = new ResponseMessage(201, "나만의 우주열차 생성 성공", responseMap);
         return new ResponseEntity<>(responseMessage, headers, HttpStatus.CREATED);
