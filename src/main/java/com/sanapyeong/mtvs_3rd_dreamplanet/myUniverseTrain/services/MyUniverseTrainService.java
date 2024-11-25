@@ -92,12 +92,12 @@ public class MyUniverseTrainService {
     }
 
     @Transactional
-    public void createMyUniverseTrain(Long userId, String trainName) {
+    public Long createMyUniverseTrain(Long userId, String trainName) {
 
         MyUniverseTrain newMyUniverseTrain
                 = new MyUniverseTrain(userId, trainName, createUniqueCode());
 
-        myUniverseTrainRepository.save(newMyUniverseTrain);
+        return myUniverseTrainRepository.save(newMyUniverseTrain).getId();
     }
 
     @Transactional
