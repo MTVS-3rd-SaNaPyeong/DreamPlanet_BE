@@ -30,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.awt.*;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -166,7 +167,7 @@ public class PlayedBlockPlanetController {
         // 두 이미지 S3 서버에 저장 후 URL 주소 반환
         List<MultipartFile> dotImages = null;
 
-        List<DotImageUrlFindResponseDTO> dotImageUrlList = null;
+        List<DotImageUrlFindResponseDTO> dotImageUrlList = new ArrayList<>();
 
         // AI 호출을 통한 이미지 생성
         for(int i = 1; i < 3; i++) {

@@ -15,6 +15,8 @@ import java.util.List;
 @EntityListeners(AuditingEntityListener.class)
 public class MyUniverseTrainFindResponseDTO {
 
+    private Long id;
+
     private String trainName;
 
     private String uniqueCode;

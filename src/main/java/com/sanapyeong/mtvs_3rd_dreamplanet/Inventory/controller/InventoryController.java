@@ -121,7 +121,7 @@ public class InventoryController {
         }
 
         try {
-            // 인벤토리에 저장
+            // 인벤토리에 저장 후, 인벤토리 id 반환
             Long inventoryId = inventoryService.saveInventory(userId, storedStatusInfo);
 
             // PostingInfo에 각 myUniverseTrain과의 조합에 대해서 행 생성
