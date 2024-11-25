@@ -52,6 +52,7 @@ public class MyUniverseTrainService {
 
             MyUniverseTrainFindResponseDTO findResult
                     = new MyUniverseTrainFindResponseDTO(
+                    myUniverseTrain.getId(),
                     myUniverseTrain.getTrainName(),
                     myUniverseTrain.getUniqueCode(),
                     myUniverseTrain.getPlanetStatus(),
@@ -79,6 +80,7 @@ public class MyUniverseTrainService {
 
         MyUniverseTrainFindResponseDTO findResult
                 = new MyUniverseTrainFindResponseDTO(
+                myUniverseTrain.getId(),
                 myUniverseTrain.getTrainName(),
                 myUniverseTrain.getUniqueCode(),
                 myUniverseTrain.getPlanetStatus(),
