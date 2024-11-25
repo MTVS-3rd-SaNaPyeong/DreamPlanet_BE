@@ -23,4 +23,6 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
                 "AND i.storedStatus = true")
     List<Object[]> findBlockInventoryByUserIdAndMyUniverseTrainId(Long userId, Long myUniverseTrainId);
 
+    @Query("SELECT i FROM Inventory i WHERE i.userId = :userId")
+    List<Inventory> findInventoriesByUserId(Long userId);
 }
