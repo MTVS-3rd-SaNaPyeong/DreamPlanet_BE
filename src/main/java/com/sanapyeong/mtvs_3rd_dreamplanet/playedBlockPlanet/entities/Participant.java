@@ -1,5 +1,6 @@
 package com.sanapyeong.mtvs_3rd_dreamplanet.playedBlockPlanet.entities;
 
+import com.sanapyeong.global.database.utils.EntityTimestamp;
 import com.sanapyeong.mtvs_3rd_dreamplanet.user.entities.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -13,7 +14,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @AllArgsConstructor
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class Participant {
+public class Participant extends EntityTimestamp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
