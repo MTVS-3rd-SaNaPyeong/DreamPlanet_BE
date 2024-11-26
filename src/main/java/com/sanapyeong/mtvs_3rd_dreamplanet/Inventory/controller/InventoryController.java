@@ -13,6 +13,7 @@ import com.sanapyeong.mtvs_3rd_dreamplanet.component.UserTokenStorage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+@Slf4j
 @Tag(name="Inventory Controller", description = "Inventory Controller")
 @RestController
 @RequestMapping("/v1/dev")

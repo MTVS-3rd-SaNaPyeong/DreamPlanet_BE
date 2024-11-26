@@ -69,6 +69,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-test'
 
     implementation 'io.sentry:sentry-spring-boot-starter:6.27.0'
+
+    // 로깅용
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.4'
 }
 
 tasks.named('test') {
