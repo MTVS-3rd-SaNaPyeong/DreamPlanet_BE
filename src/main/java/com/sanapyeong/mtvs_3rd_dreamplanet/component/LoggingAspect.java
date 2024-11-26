@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
 @Slf4j
 @Aspect
 @Component
-public class aop {
+public class LoggingAspect {
     @Pointcut("execution(* com.sanapyeong.mtvs_3rd_dreamplanet..controller..*.*(..))")
     public void pointcut() {}
 

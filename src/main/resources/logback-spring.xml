@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <configuration>
-    <springProperty name="LOGSTASH_URL" value="${LOGSTASH_URL}" />
-
     <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
         <!-- 로그 스태시 주소 -->
         <destination>${LOGSTASH_URL}</destination>
