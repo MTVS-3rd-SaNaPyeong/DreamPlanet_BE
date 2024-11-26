@@ -1,5 +1,6 @@
 package com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.entities;
 
+import com.sanapyeong.global.database.utils.EntityTimestamp;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -12,7 +13,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @AllArgsConstructor
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-public class PostingInfo {
+public class PostingInfo extends EntityTimestamp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
