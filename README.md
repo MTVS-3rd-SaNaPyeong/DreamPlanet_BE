@@ -1,3 +1,10 @@
 # 👨‍🚀 Dream Planet 🚀 - BE
 ---
-팀원 소개
+
+## 1. Tech Stack
+
+## 2. System Architecture
+
+## 3. Developer
+
+## 4. Collaborations
