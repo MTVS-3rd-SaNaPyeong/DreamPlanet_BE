@@ -71,16 +71,28 @@ public class MyUniverseTrainController {
             return new ResponseEntity<>(responseMessage, headers, HttpStatus.NOT_FOUND);
         }
 
-        List<MyUniverseTrainFindResponseDTO> findResultList = null;
+//        List<MyUniverseTrainFindResponseDTO> findResultList = null;
+//
+//        try {
+//            findResultList = myUniverseTrainService.findMyUniverseTrainsByUserId(userId);
+//        } catch (IOException e) {
+//            ResponseMessage responseMessage = new ResponseMessage(404, "열차 없음", responseMap);
+//            return new ResponseEntity<>(responseMessage, headers, HttpStatus.NOT_FOUND);
+//        }
+//
+//        responseMap.put("myUniverseTrainList", findResultList);
+
+        List<MyUniverseTrainSummaryFindResponseDTO> foundList = null;
 
         try {
-            findResultList = myUniverseTrainService.findMyUniverseTrainsByUserId(userId);
+            foundList = myUniverseTrainService.findMyUniverseTrainsByUserId(userId);
         } catch (IOException e) {
             ResponseMessage responseMessage = new ResponseMessage(404, "열차 없음", responseMap);
             return new ResponseEntity<>(responseMessage, headers, HttpStatus.NOT_FOUND);
         }
 
-        responseMap.put("myUniverseTrainList", findResultList);
+        responseMap.put("myUniverseTrainList", foundList);
+
 
         ResponseMessage responseMessage = new ResponseMessage(200, "열차 정보 반환 성공", responseMap);
         return new ResponseEntity<>(responseMessage, headers, HttpStatus.OK);
