@@ -35,34 +35,43 @@ public class MyUniverseTrainService {
         this.inventoryRepository = inventoryRepository;
     }
 
-    public List<MyUniverseTrainFindResponseDTO> findMyUniverseTrainsByUserId(Long userId) throws IOException {
+    public List<MyUniverseTrainSummaryFindResponseDTO> findMyUniverseTrainsByUserId(Long userId) throws IOException {
 
-        List<MyUniverseTrain> myUniverseTrainList
-                = myUniverseTrainRepository.findMyUniverseTrainsByUserId(userId);
+//        List<MyUniverseTrain> myUniverseTrainList
+//                = myUniverseTrainRepository.findMyUniverseTrainsByUserId(userId);
+//
+//        List<MyUniverseTrainFindResponseDTO> findResultList = new ArrayList<>();
+//
+//        for(MyUniverseTrain myUniverseTrain : myUniverseTrainList){
+//
+//            List<BlockInventoryFindResponseDTO> blockTrainInfo
+//                    = inventoryRepository.findBlockInventoryByUserIdAndMyUniverseTrainId(userId, myUniverseTrain.getId())
+//                    .stream()
+//                    .map(BlockInventoryFindResponseDTO::new)
+//                    .toList();
+//
+//            MyUniverseTrainFindResponseDTO findResult
+//                    = new MyUniverseTrainFindResponseDTO(
+//                    myUniverseTrain.getId(),
+//                    myUniverseTrain.getTrainName(),
+//                    myUniverseTrain.getUniqueCode(),
+//                    myUniverseTrain.getPlanetStatus(),
+//                    myUniverseTrain.getPlanetOrder(),
+//                    blockTrainInfo);
+//
+//            findResultList.add(findResult);
+//        }
+//
+//        return findResultList;
 
-        List<MyUniverseTrainFindResponseDTO> findResultList = new ArrayList<>();
+        List<MyUniverseTrainSummaryFindResponseDTO> foundList = null;
 
-        for(MyUniverseTrain myUniverseTrain : myUniverseTrainList){
+        foundList = myUniverseTrainRepository.findMyUniverseTrainsByUserId(userId)
+                .stream()
+                .map(MyUniverseTrainSummaryFindResponseDTO::new)
+                .toList();
 
-            List<BlockInventoryFindResponseDTO> blockTrainInfo
-                    = inventoryRepository.findBlockInventoryByUserIdAndMyUniverseTrainId(userId, myUniverseTrain.getId())
-                    .stream()
-                    .map(BlockInventoryFindResponseDTO::new)
-                    .toList();
-
-            MyUniverseTrainFindResponseDTO findResult
-                    = new MyUniverseTrainFindResponseDTO(
-                    myUniverseTrain.getId(),
-                    myUniverseTrain.getTrainName(),
-                    myUniverseTrain.getUniqueCode(),
-                    myUniverseTrain.getPlanetStatus(),
-                    myUniverseTrain.getPlanetOrder(),
-                    blockTrainInfo);
-
-            findResultList.add(findResult);
-        }
-
-        return findResultList;
+        return foundList;
     }
 
     public MyUniverseTrainFindResponseDTO findById(Long id) throws IOException{
