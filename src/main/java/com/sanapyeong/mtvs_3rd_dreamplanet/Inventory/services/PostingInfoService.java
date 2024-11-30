@@ -29,7 +29,7 @@ public class PostingInfoService {
     @Transactional
     public void savePosingInfoByInventory(Long userId, Long inventoryId) {
 
-        List<MyUniverseTrain> myUniverseTrainList = myUniverseTrainRepository.findMyUniverseTrainsByUserId(userId);
+        List<MyUniverseTrain> myUniverseTrainList = myUniverseTrainRepository.findMyUniverseTrainsTemp(userId);
 
         for(MyUniverseTrain myUniverseTrain : myUniverseTrainList) {
             PostingInfo postingInfo = new PostingInfo(inventoryId, myUniverseTrain.getId());
