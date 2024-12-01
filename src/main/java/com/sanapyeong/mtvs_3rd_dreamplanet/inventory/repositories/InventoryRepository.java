@@ -1,10 +1,7 @@
-package com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.repositories;
+package com.sanapyeong.mtvs_3rd_dreamplanet.inventory.repositories;
 
 
-import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.dto.BlockInventoryFindResponseDTO;
-import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.entities.Inventory;
-import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.enums.PlanetType;
-import com.sanapyeong.mtvs_3rd_dreamplanet.user.entities.User;
+import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.entities.Inventory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -19,7 +16,7 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
                 "LEFT JOIN PlayedBlockPlanet b on i.playedPlanetId = b.id " +
                 "LEFT JOIN PostingInfo p on i.id = p.inventoryId AND p.myUniverseTrainId = :myUniverseTrainId " +
             "WHERE i.userId = :userId " +
-                "AND i.planetType = com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.enums.PlanetType.BLOCK " +
+                "AND i.planetType = com.sanapyeong.mtvs_3rd_dreamplanet.inventory.enums.PlanetType.BLOCK " +
                 "AND i.storedStatus = true")
     List<Object[]> findBlockInventoryByUserIdAndMyUniverseTrainId(Long userId, Long myUniverseTrainId);
 

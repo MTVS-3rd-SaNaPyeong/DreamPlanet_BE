@@ -1,9 +1,9 @@
-package com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.services;
+package com.sanapyeong.mtvs_3rd_dreamplanet.inventory.services;
 
-import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.entities.Inventory;
-import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.entities.PostingInfo;
-import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.repositories.InventoryRepository;
-import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.repositories.PostingInfoRepository;
+import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.entities.Inventory;
+import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.entities.PostingInfo;
+import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.repositories.InventoryRepository;
+import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.repositories.PostingInfoRepository;
 import com.sanapyeong.mtvs_3rd_dreamplanet.myUniverseTrain.entities.MyUniverseTrain;
 import com.sanapyeong.mtvs_3rd_dreamplanet.myUniverseTrain.repositories.MyUniverseTrainRepository;
 import org.springframework.stereotype.Service;

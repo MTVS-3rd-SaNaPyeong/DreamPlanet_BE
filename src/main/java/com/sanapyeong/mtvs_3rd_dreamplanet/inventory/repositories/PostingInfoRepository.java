@@ -1,9 +1,8 @@
-package com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.repositories;
+package com.sanapyeong.mtvs_3rd_dreamplanet.inventory.repositories;
 
-import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.entities.PostingInfo;
+import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.entities.PostingInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 

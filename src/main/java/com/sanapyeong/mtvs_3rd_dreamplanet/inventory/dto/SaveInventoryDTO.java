@@ -1,6 +1,6 @@
-package com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.dto;
+package com.sanapyeong.mtvs_3rd_dreamplanet.inventory.dto;
 
-import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.enums.PlanetType;
+import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.enums.PlanetType;
 import jakarta.persistence.EntityListeners;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;

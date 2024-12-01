@@ -1,4 +1,4 @@
-package com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.enums;
+package com.sanapyeong.mtvs_3rd_dreamplanet.inventory.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

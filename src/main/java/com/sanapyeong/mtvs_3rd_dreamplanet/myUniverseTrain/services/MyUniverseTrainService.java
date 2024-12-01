@@ -3,10 +3,10 @@ package com.sanapyeong.mtvs_3rd_dreamplanet.myUniverseTrain.services;
 import com.amazonaws.services.kms.model.NotFoundException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.dto.BlockInventoryFindResponseDTO;
-import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.entities.PostingInfo;
-import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.repositories.InventoryRepository;
-import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.repositories.PostingInfoRepository;
+import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.dto.BlockInventoryFindResponseDTO;
+import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.entities.PostingInfo;
+import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.repositories.InventoryRepository;
+import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.repositories.PostingInfoRepository;
 import com.sanapyeong.mtvs_3rd_dreamplanet.myUniverseTrain.dto.MyUniverseTrainFindResponseDTO;
 import com.sanapyeong.mtvs_3rd_dreamplanet.myUniverseTrain.dto.MyUniverseTrainSummaryFindResponseDTO;
 import com.sanapyeong.mtvs_3rd_dreamplanet.myUniverseTrain.entities.MyUniverseTrain;
@@ -20,8 +20,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
-
-import static java.util.stream.Collectors.toList;
 
 @Service
 public class MyUniverseTrainService {

@@ -1,13 +1,10 @@
-package com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.entities;
+package com.sanapyeong.mtvs_3rd_dreamplanet.inventory.entities;
 
 import com.sanapyeong.global.database.utils.EntityTimestamp;
-import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.enums.PlanetType;
+import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.enums.PlanetType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name="TBL_INVENTORY")
