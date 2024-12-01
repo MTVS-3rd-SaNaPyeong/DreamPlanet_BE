@@ -85,7 +85,7 @@ public class ImageGenerationService {
 //        }
 //        return dotImages;
 
-        String url = "http://221.163.19.142:17777/generate_icon";
+        String url = "http://112.153.210.109:9000/generate_icon";
         List<MultipartFile> dotImages = new ArrayList<>();
 
         // HttpClient 생성
