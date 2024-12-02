@@ -1,18 +1,16 @@
-package com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.services;
+package com.sanapyeong.mtvs_3rd_dreamplanet.inventory.services;
 
-import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.dto.BlockInventoryFindResponseDTO;
-import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.dto.SaveInventoryDTO;
-import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.entities.Inventory;
-import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.repositories.InventoryRepository;
-import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.repositories.PostingInfoRepository;
-import com.sanapyeong.mtvs_3rd_dreamplanet.playedBlockPlanet.entities.PlayedBlockPlanet;
+import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.dto.BlockInventoryFindResponseDTO;
+import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.dto.SaveInventoryDTO;
+import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.entities.Inventory;
+import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.repositories.InventoryRepository;
+import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.repositories.PostingInfoRepository;
 import com.sanapyeong.mtvs_3rd_dreamplanet.playedBlockPlanet.repositories.PlayedBlockPlanetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class InventoryService {

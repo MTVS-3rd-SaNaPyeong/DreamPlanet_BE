@@ -1,15 +1,8 @@
-package com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.dto;
+package com.sanapyeong.mtvs_3rd_dreamplanet.inventory.dto;
 
-import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.entities.Inventory;
-import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.enums.PlanetType;
-import com.sanapyeong.mtvs_3rd_dreamplanet.playedBlockPlanet.entities.PlayedBlockPlanet;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter

@@ -1,4 +1,4 @@
-package com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.entities;
+package com.sanapyeong.mtvs_3rd_dreamplanet.inventory.entities;
 
 import com.sanapyeong.global.database.utils.EntityTimestamp;
 import jakarta.persistence.*;

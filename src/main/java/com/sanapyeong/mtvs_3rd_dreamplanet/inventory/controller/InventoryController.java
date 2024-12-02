@@ -1,13 +1,11 @@
-package com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.controller;
+package com.sanapyeong.mtvs_3rd_dreamplanet.inventory.controller;
 
-import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.dto.BlockInventoryFindResponseDTO;
-import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.dto.PostedLocationUpdateRequestDTO;
-import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.dto.SaveInventoryDTO;
-import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.entities.Inventory;
-import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.repositories.InventoryRepository;
-import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.repositories.PostingInfoRepository;
-import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.services.InventoryService;
-import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.services.PostingInfoService;
+import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.dto.BlockInventoryFindResponseDTO;
+import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.dto.PostedLocationUpdateRequestDTO;
+import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.dto.SaveInventoryDTO;
+import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.entities.Inventory;
+import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.services.InventoryService;
+import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.services.PostingInfoService;
 import com.sanapyeong.mtvs_3rd_dreamplanet.ResponseMessage;
 import com.sanapyeong.mtvs_3rd_dreamplanet.component.UserTokenStorage;
 import io.swagger.v3.oas.annotations.Operation;

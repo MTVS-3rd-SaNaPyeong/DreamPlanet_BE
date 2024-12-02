@@ -1,9 +1,12 @@
 package com.sanapyeong.mtvs_3rd_dreamplanet.myUniverseTrain.services;
 
+import com.amazonaws.services.kms.model.NotFoundException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.dto.BlockInventoryFindResponseDTO;
-import com.sanapyeong.mtvs_3rd_dreamplanet.Inventory.repositories.InventoryRepository;
+import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.dto.BlockInventoryFindResponseDTO;
+import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.entities.PostingInfo;
+import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.repositories.InventoryRepository;
+import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.repositories.PostingInfoRepository;
 import com.sanapyeong.mtvs_3rd_dreamplanet.myUniverseTrain.dto.MyUniverseTrainFindResponseDTO;
 import com.sanapyeong.mtvs_3rd_dreamplanet.myUniverseTrain.dto.MyUniverseTrainSummaryFindResponseDTO;
 import com.sanapyeong.mtvs_3rd_dreamplanet.myUniverseTrain.entities.MyUniverseTrain;
@@ -18,21 +21,22 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
-import static java.util.stream.Collectors.toList;
-
 @Service
 public class MyUniverseTrainService {
 
     private final MyUniverseTrainRepository myUniverseTrainRepository;
     private final InventoryRepository inventoryRepository;
+    private final PostingInfoRepository postingInfoRepository;
 
     @Autowired
     public MyUniverseTrainService(
             MyUniverseTrainRepository myUniverseTrainRepository,
-            InventoryRepository inventoryRepository
+            InventoryRepository inventoryRepository,
+            PostingInfoRepository postingInfoRepository
     ){
         this.myUniverseTrainRepository = myUniverseTrainRepository;
         this.inventoryRepository = inventoryRepository;
+        this.postingInfoRepository = postingInfoRepository;
     }
 
     public List<MyUniverseTrainSummaryFindResponseDTO> findMyUniverseTrainsByUserId(Long userId) throws IOException {
@@ -211,5 +215,42 @@ public class MyUniverseTrainService {
                 .toList();
 
         return foundList;
+    }
+
+    @Transactional
+    public void deleteMyUniverseTrain(Long myUniverseTrainId, Long userId) {
+
+        // myUniverseTrainId로 해당 객체 검색
+        Optional<MyUniverseTrain> myUniverseTrainList = myUniverseTrainRepository.findById(myUniverseTrainId);
+
+        // 존재하는 열차인지 화인
+        if(myUniverseTrainList.isPresent()){
+
+            MyUniverseTrain myUniverseTrain = myUniverseTrainList.get();
+
+            // 삭제하고자 하는 유저와 열차의 소유주가 동일한지 확인
+            if(Objects.equals(myUniverseTrain.getUserId(), userId)){
+
+                // Posting Info 조회 후 삭제
+                List<PostingInfo> postingInfoList
+                        = postingInfoRepository.findByMyUniverseTrainId(myUniverseTrainId);
+
+                for(PostingInfo postingInfo : postingInfoList){
+                    postingInfoRepository.deleteById(postingInfo.getId());
+                }
+
+                // My Universe Train 삭제
+                myUniverseTrainRepository.deleteById(myUniverseTrainId);
+
+            } else{
+                System.out.println("열차의 소유주와 삭제하고자 하는 유저가 일치하지 않습니다");
+                throw new IllegalArgumentException("열차의 소유주와 삭제하고자 하는 유저가 일치하지 않습니다");
+            }
+        } else{ // 만약 존재하지 않는 열차 번호라면
+            System.out.println("존재하지 않는 열차입니다");
+            throw new NotFoundException("존재하지 않는 열차입니다");
+        }
+
+
     }
 }
