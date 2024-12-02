@@ -256,7 +256,7 @@ public class MyUniverseTrainController {
     }
 
     @DeleteMapping("/my-universe-trains")
-    @Operation(summary = "나만의 우주 열차 생성", description = "나만의 우주 열차 생성 API")
+    @Operation(summary = "나만의 우주 열차 삭제", description = "나만의 우주 열차 삭제 API")
     public ResponseEntity<?> deleteMyUniverseTrain(
         @RequestParam Long myUniverseTrainId,
         HttpServletRequest request
