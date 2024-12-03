@@ -16,7 +16,9 @@ public class PromptInspectionService {
 
     public String inspectPrompt(String prompt){
 
-        String url = "http://112.153.210.109:9000/process_text";
+//        String url = "http://112.153.210.109:9000/process_text";
+        String url = "http://221.163.19.142:17777/process_text";
+
 
         // 헤더 설정 (필요한 경우)
         HttpHeaders headers = new HttpHeaders();
