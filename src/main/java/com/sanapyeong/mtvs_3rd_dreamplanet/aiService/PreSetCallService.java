@@ -25,7 +25,8 @@ public class PreSetCallService {
 
     public List<MultipartFile> generateDotImage() throws IOException {
 
-        String url = "http://112.153.210.109:9000/images";
+//        String url = "http://112.153.210.109:9000/images";
+        String url = "http://221.163.19.142:17777/images";
         List<MultipartFile> dotImages = new ArrayList<>();
 
         // HttpClient 생성
