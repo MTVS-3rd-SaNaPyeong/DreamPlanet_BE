@@ -172,7 +172,7 @@ public class PlayedBlockPlanetController {
         List<DotImageUrlFindResponseDTO> dotImageUrlList = new ArrayList<>();
 
         // AI 호출을 통한 이미지 생성
-        for(int i = 1; i < 3; i++) {
+        for(int i = 1; i < 4; i++) {
 
             try {
                 dotImages = imageGenerationService.generateDotImage(translatedText);
@@ -197,21 +197,21 @@ public class PlayedBlockPlanetController {
         }
 
         // 프리셋 호출
-        dotImages = preSetCallService.generateDotImage();
-
-        MultipartFile colorDotImage = dotImages.get(0);
-        MultipartFile blackAndWhiteDotImage = dotImages.get(1);
-
-        String colorDotImageURL = s3Service.saveColorDotImage(colorDotImage, playedBlockPlanetId, 3L);
-        String blackAndWhiteDotImageURL = s3Service.saveBlackAndWhiteDotImage(blackAndWhiteDotImage, playedBlockPlanetId, 3L);
+//        dotImages = preSetCallService.generateDotImage();
+//
+//        MultipartFile colorDotImage = dotImages.get(0);
+//        MultipartFile blackAndWhiteDotImage = dotImages.get(1);
+//
+//        String colorDotImageURL = s3Service.saveColorDotImage(colorDotImage, playedBlockPlanetId, 3L);
+//        String blackAndWhiteDotImageURL = s3Service.saveBlackAndWhiteDotImage(blackAndWhiteDotImage, playedBlockPlanetId, 3L);
 
         // URL 주소 저장
-        tempBlockPlanetStorageService.saveDotImageURL(playedBlockPlanetId, 3L, colorDotImageURL, blackAndWhiteDotImageURL);
-
-        DotImageUrlFindResponseDTO dotImageUrl
-                = new DotImageUrlFindResponseDTO( 3L, colorDotImageURL, blackAndWhiteDotImageURL);
-
-        dotImageUrlList.add(dotImageUrl);
+//        tempBlockPlanetStorageService.saveDotImageURL(playedBlockPlanetId, 3L, colorDotImageURL, blackAndWhiteDotImageURL);
+//
+//        DotImageUrlFindResponseDTO dotImageUrl
+//                = new DotImageUrlFindResponseDTO( 3L, colorDotImageURL, blackAndWhiteDotImageURL);
+//
+//        dotImageUrlList.add(dotImageUrl);
 
         responseMap.put("dotImageUrlList", dotImageUrlList);
 
