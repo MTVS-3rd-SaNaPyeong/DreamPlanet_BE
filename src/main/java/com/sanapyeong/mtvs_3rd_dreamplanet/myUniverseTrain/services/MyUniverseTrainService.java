@@ -217,6 +217,20 @@ public class MyUniverseTrainService {
         return foundList;
     }
 
+
+    public List<MyUniverseTrainSummaryFindResponseDTO> findRandomMyUniverseTrains(Long userId) {
+
+        List<MyUniverseTrainSummaryFindResponseDTO> foundList = null;
+
+        foundList = myUniverseTrainRepository.findRandomMyUniverseTrains(userId)
+                .stream()
+                .map(MyUniverseTrainSummaryFindResponseDTO::new)
+                .toList();
+
+        return foundList;
+
+    }
+
     @Transactional
     public void deleteMyUniverseTrain(Long myUniverseTrainId, Long userId) {
 
@@ -250,7 +264,6 @@ public class MyUniverseTrainService {
             System.out.println("존재하지 않는 열차입니다");
             throw new NotFoundException("존재하지 않는 열차입니다");
         }
-
-
     }
+
 }
