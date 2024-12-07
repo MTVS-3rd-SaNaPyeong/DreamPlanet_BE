@@ -124,7 +124,7 @@ public class MyUniverseTrainController {
     }
 
     @GetMapping("/my-universe-trains/searching")
-    @Operation(summary = "나만의 우주 열차 검색", description = "열차 이름 또는 고유 코드로 우주 열차 검색")
+    @Operation(summary = "우주 열차 검색", description = "열차 이름 또는 고유 코드로 우주 열차 검색")
     public ResponseEntity<?> findMyUniverseTrainBySearchWord(
             @RequestParam String searchWord
     ){
@@ -142,6 +142,41 @@ public class MyUniverseTrainController {
         ResponseMessage responseMessage = new ResponseMessage(200, "열차 검색 성공", responseMap);
         return new ResponseEntity<>(responseMessage, headers, HttpStatus.OK);
     }
+
+    @GetMapping("/my-universe-trains/random")
+    @Operation(summary = "랜덤 우주 열차 검색", description = "랜덤으로 4개의 우주 열차를 검색")
+    public ResponseEntity<?> findRandomMyUniverseTrains(
+            HttpServletRequest request
+    ){
+        // Response Message 기본 세팅
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+        Map<String, Object> responseMap = new HashMap<>();
+
+        // 헤더에서 토큰 추출
+        String authorizationHeader = request.getHeader("Authorization");
+        System.out.println("Authorization header: " + authorizationHeader);
+
+        // User Token Storage에서 해당 토큰에 맞는 유저 식별
+        Long userId = userTokenStorage.getToken(authorizationHeader);
+
+        // 만약 입력된 토큰에 해당하는 유저가 없다면
+        if (userId == null) {
+            ResponseMessage responseMessage = new ResponseMessage(404, "사용자 없음", responseMap);
+            return new ResponseEntity<>(responseMessage, headers, HttpStatus.NOT_FOUND);
+        }
+
+        List<MyUniverseTrainSummaryFindResponseDTO> foundList
+                = myUniverseTrainService.findRandomMyUniverseTrains(userId);
+
+        responseMap.put("myUniverseTrainList", foundList);
+
+
+        ResponseMessage responseMessage = new ResponseMessage(200, "열차 정보 반환 성공", responseMap);
+        return new ResponseEntity<>(responseMessage, headers, HttpStatus.OK);
+
+    }
+
 
     @PostMapping("/my-universe-trains")
     @Operation(summary = "나만의 우주 열차 생성", description = "나만의 우주 열차 생성 API")
