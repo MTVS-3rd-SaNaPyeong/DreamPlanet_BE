@@ -27,6 +27,13 @@ public interface MyUniverseTrainRepository extends JpaRepository<MyUniverseTrain
             "WHERE m.trainName like %:searchWord% OR m.uniqueCode like %:searchWord%")
     List<Object[]> findMyUniverseTrainsBySearchWord(String searchWord);
 
+    @Query("SELECT m.id, m.userId, m.trainName, m.uniqueCode " +
+            "FROM MyUniverseTrain m " +
+            "WHERE m.userId != :userId " +
+            "ORDER BY Rand() " +
+            "LIMIT 4")
+    List<Object[]> findRandomMyUniverseTrains(Long userId);
+
 //    @Query("SELECT u FROM User u WHERE u.loginId = :loginId")
 //    User findUserByLoginId(String loginId);
 
