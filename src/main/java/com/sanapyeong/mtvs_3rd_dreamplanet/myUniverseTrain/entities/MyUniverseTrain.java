@@ -3,6 +3,7 @@ package com.sanapyeong.mtvs_3rd_dreamplanet.myUniverseTrain.entities;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.sanapyeong.global.database.utils.EntityTimestamp;
+import com.sanapyeong.mtvs_3rd_dreamplanet.myUniverseTrain.enums.TrainColor;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -36,6 +37,8 @@ public class MyUniverseTrain extends EntityTimestamp {
     @Column(unique = true)
     private String uniqueCode;
 
+    private TrainColor trainColor;
+
     @Column(columnDefinition = "json")
     private String planetStatus;
 
@@ -47,6 +50,7 @@ public class MyUniverseTrain extends EntityTimestamp {
 
     public MyUniverseTrain(Long userId, String trainName, String uniqueCode) {
         this.userId = userId;
+        this.trainColor = TrainColor.BASIC;
         this.trainName = trainName;
         this.uniqueCode = uniqueCode;
         List<Boolean> planetStatus = Arrays.asList(new Boolean[]{false, false, false, false, false});
