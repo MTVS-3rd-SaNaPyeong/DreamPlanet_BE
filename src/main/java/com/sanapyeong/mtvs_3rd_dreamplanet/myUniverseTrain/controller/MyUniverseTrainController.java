@@ -6,6 +6,7 @@ import com.sanapyeong.mtvs_3rd_dreamplanet.ResponseMessage;
 import com.sanapyeong.mtvs_3rd_dreamplanet.component.UserTokenStorage;
 import com.sanapyeong.mtvs_3rd_dreamplanet.myUniverseTrain.dto.MyUniverseTrainFindResponseDTO;
 import com.sanapyeong.mtvs_3rd_dreamplanet.myUniverseTrain.dto.MyUniverseTrainSummaryFindResponseDTO;
+import com.sanapyeong.mtvs_3rd_dreamplanet.myUniverseTrain.enums.TrainColor;
 import com.sanapyeong.mtvs_3rd_dreamplanet.myUniverseTrain.services.MyUniverseTrainService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -14,10 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -289,6 +287,46 @@ public class MyUniverseTrainController {
         ResponseMessage responseMessage = new ResponseMessage(200, "planet status 수정 성공", responseMap);
         return new ResponseEntity<>(responseMessage, headers, HttpStatus.OK);
     }
+
+    @PatchMapping("/my-universe-trains/color-changing")
+    @Operation(summary = "나만의 우주 열차 색상 변경", description = "나만의 우주 열차 색상 변경 API")
+    public ResponseEntity<?> modifyMyUniverseTrainColor(
+            @RequestParam Long myUniverseTrainId,
+            @RequestParam TrainColor trainColor,
+            HttpServletRequest request
+    ){
+        // Response Message 기본 세팅
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+        Map<String, Object> responseMap = new HashMap<>();
+
+        // 헤더에서 토큰 추출
+        String authorizationHeader = request.getHeader("Authorization");
+        System.out.println("Authorization header: " + authorizationHeader);
+
+        // User Token Storage에서 해당 토큰에 맞는 유저 식별
+        Long userId = userTokenStorage.getToken(authorizationHeader);
+
+        // 만약 입력된 토큰에 해당하는 유저가 없다면
+        if (userId == null) {
+            ResponseMessage responseMessage = new ResponseMessage(404, "사용자 없음", responseMap);
+            return new ResponseEntity<>(responseMessage, headers, HttpStatus.NOT_FOUND);
+        }
+
+        try {
+            myUniverseTrainService.modifyMyUniverseTrainColor(myUniverseTrainId, userId, trainColor);
+        } catch (NotFoundException e){
+            ResponseMessage responseMessage = new ResponseMessage(404, "열차 없음", responseMap);
+            return new ResponseEntity<>(responseMessage, headers, HttpStatus.NOT_FOUND);
+        } catch (IllegalArgumentException e){
+            ResponseMessage responseMessage = new ResponseMessage(400, "수정 요청 유저와 열차 소유주 불일치", responseMap);
+            return new ResponseEntity<>(responseMessage, headers, HttpStatus.BAD_REQUEST);
+        }
+
+        ResponseMessage responseMessage = new ResponseMessage(200, "train color 수정 성공", responseMap);
+        return new ResponseEntity<>(responseMessage, headers, HttpStatus.OK);
+    }
+
 
     @DeleteMapping("/my-universe-trains")
     @Operation(summary = "나만의 우주 열차 삭제", description = "나만의 우주 열차 삭제 API")
