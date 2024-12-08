@@ -10,6 +10,7 @@ import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.repositories.PostingInfoRep
 import com.sanapyeong.mtvs_3rd_dreamplanet.myUniverseTrain.dto.MyUniverseTrainFindResponseDTO;
 import com.sanapyeong.mtvs_3rd_dreamplanet.myUniverseTrain.dto.MyUniverseTrainSummaryFindResponseDTO;
 import com.sanapyeong.mtvs_3rd_dreamplanet.myUniverseTrain.entities.MyUniverseTrain;
+import com.sanapyeong.mtvs_3rd_dreamplanet.myUniverseTrain.enums.TrainColor;
 import com.sanapyeong.mtvs_3rd_dreamplanet.myUniverseTrain.repositories.MyUniverseTrainRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -94,6 +95,7 @@ public class MyUniverseTrainService {
         MyUniverseTrainFindResponseDTO findResult
                 = new MyUniverseTrainFindResponseDTO(
                 myUniverseTrain.getId(),
+                myUniverseTrain.getTrainColor(),
                 myUniverseTrain.getTrainName(),
                 myUniverseTrain.getUniqueCode(),
                 myUniverseTrain.getPlanetStatus(),
@@ -202,6 +204,32 @@ public class MyUniverseTrainService {
         }else{
             System.out.println("해당 유저의 우주 열차가 존재하지 않습니다.");
             throw new IllegalArgumentException("해당 유저의 우주 열차가 존재하지 않습니다.");
+        }
+    }
+
+    @Transactional
+    public void modifyMyUniverseTrainColor(Long myUniverseTrainId, Long userId, TrainColor trainColor) {
+
+        // myUniverseTrainId로 해당 객체 검색
+        Optional<MyUniverseTrain> myUniverseTrainList = myUniverseTrainRepository.findById(myUniverseTrainId);
+
+        // 존재하는 열차인지 화인
+        if(myUniverseTrainList.isPresent()){
+
+            MyUniverseTrain myUniverseTrain = myUniverseTrainList.get();
+
+            // 삭제하고자 하는 유저와 열차의 소유주가 동일한지 확인
+            if(Objects.equals(myUniverseTrain.getUserId(), userId)){
+
+                myUniverseTrain.setTrainColor(trainColor);
+
+            } else{
+                System.out.println("열차의 소유주와 수정하고자 하는 유저가 일치하지 않습니다");
+                throw new IllegalArgumentException("열차의 소유주와 수정하고자 하는 유저가 일치하지 않습니다");
+            }
+        } else{ // 만약 존재하지 않는 열차 번호라면
+            System.out.println("존재하지 않는 열차입니다");
+            throw new NotFoundException("존재하지 않는 열차입니다");
         }
     }
 
