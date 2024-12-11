@@ -110,8 +110,8 @@ public class MyUniverseTrainController {
 
         try {
             findResult = myUniverseTrainService.findById(id);
-        } catch (IOException e) {
-            ResponseMessage responseMessage = new ResponseMessage(404, "열차 없음", responseMap);
+        } catch (NotFoundException e) {
+            ResponseMessage responseMessage = new ResponseMessage(404, e.getMessage(), responseMap);
             return new ResponseEntity<>(responseMessage, headers, HttpStatus.NOT_FOUND);
         }
 
