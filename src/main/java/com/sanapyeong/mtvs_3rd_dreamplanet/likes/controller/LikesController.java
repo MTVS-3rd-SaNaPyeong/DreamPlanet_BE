@@ -1,8 +1,10 @@
 package com.sanapyeong.mtvs_3rd_dreamplanet.likes.controller;
 
 
+import com.amazonaws.services.kms.model.NotFoundException;
 import com.sanapyeong.mtvs_3rd_dreamplanet.ResponseMessage;
 import com.sanapyeong.mtvs_3rd_dreamplanet.component.UserTokenStorage;
+import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.services.PostingInfoService;
 import com.sanapyeong.mtvs_3rd_dreamplanet.likes.services.LikesService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,14 +30,17 @@ import java.util.Map;
 public class LikesController {
 
     private final LikesService likesService;
+    private final PostingInfoService postingInfoService;
     private final UserTokenStorage userTokenStorage;
 
     @Autowired
     public LikesController(
             LikesService likesService,
+            PostingInfoService postingInfoService,
             UserTokenStorage userTokenStorage
     ) {
         this.likesService = likesService;
+        this.postingInfoService = postingInfoService;
         this.userTokenStorage = userTokenStorage;
     }
 
@@ -63,10 +68,21 @@ public class LikesController {
             return new ResponseEntity<>(responseMessage, headers, HttpStatus.NOT_FOUND);
         }
 
-        likesService.createLikes(userId, postingInfoId);
+        try {
+            likesService.createLikes(userId, postingInfoId);
+        } catch (IllegalArgumentException e) {
+            ResponseMessage responseMessage = new ResponseMessage(400, e.getMessage(), responseMap);
+            return new ResponseEntity<>(responseMessage, headers, HttpStatus.BAD_REQUEST);
+        } catch (NotFoundException e) {
+            ResponseMessage responseMessage = new ResponseMessage(404, e.getMessage(), responseMap);
+            return new ResponseEntity<>(responseMessage, headers, HttpStatus.NOT_FOUND);
+        }
 
+        postingInfoService.increaseLikesAmt(postingInfoId);
 
-        ResponseMessage responseMessage = new ResponseMessage(200, "열차 정보 반환 성공", responseMap);
+        ResponseMessage responseMessage = new ResponseMessage(200, "좋아요 누르기 성공", responseMap);
         return new ResponseEntity<>(responseMessage, headers, HttpStatus.OK);
     }
+
+
 }
