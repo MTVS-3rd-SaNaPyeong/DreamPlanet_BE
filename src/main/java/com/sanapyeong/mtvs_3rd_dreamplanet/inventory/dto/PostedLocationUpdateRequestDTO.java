@@ -14,11 +14,15 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public class PostedLocationUpdateRequestDTO {
 
     // 변경될 작품의 inventory id
+    // -> postingInfo id
     // 만약 빈 공간이었다면, 0으로 반환
-    private Long prevId;
+    // private Long prevId;
+    private Long prevPostingInfoId;
 
     // 변경할 작품의 inventory id
-    private Long nextId;
+    // -> postingInfo id
+    // private Long nextId;
+    private Long nextPostingInfoId;
 
     // 우주열차 id
     private Long myUniverseTrainId;
