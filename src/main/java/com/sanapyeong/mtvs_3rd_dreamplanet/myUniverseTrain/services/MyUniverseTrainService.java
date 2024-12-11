@@ -7,6 +7,8 @@ import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.dto.BlockInventoryFindRespo
 import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.entities.PostingInfo;
 import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.repositories.InventoryRepository;
 import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.repositories.PostingInfoRepository;
+import com.sanapyeong.mtvs_3rd_dreamplanet.likes.entities.Likes;
+import com.sanapyeong.mtvs_3rd_dreamplanet.likes.repositories.LikesRepository;
 import com.sanapyeong.mtvs_3rd_dreamplanet.myUniverseTrain.dto.MyUniverseTrainFindResponseDTO;
 import com.sanapyeong.mtvs_3rd_dreamplanet.myUniverseTrain.dto.MyUniverseTrainSummaryFindResponseDTO;
 import com.sanapyeong.mtvs_3rd_dreamplanet.myUniverseTrain.entities.MyUniverseTrain;
@@ -28,16 +30,19 @@ public class MyUniverseTrainService {
     private final MyUniverseTrainRepository myUniverseTrainRepository;
     private final InventoryRepository inventoryRepository;
     private final PostingInfoRepository postingInfoRepository;
+    private final LikesRepository likesRepository;
 
     @Autowired
     public MyUniverseTrainService(
             MyUniverseTrainRepository myUniverseTrainRepository,
             InventoryRepository inventoryRepository,
-            PostingInfoRepository postingInfoRepository
+            PostingInfoRepository postingInfoRepository,
+            LikesRepository likesRepository
     ){
         this.myUniverseTrainRepository = myUniverseTrainRepository;
         this.inventoryRepository = inventoryRepository;
         this.postingInfoRepository = postingInfoRepository;
+        this.likesRepository = likesRepository;
     }
 
     public List<MyUniverseTrainSummaryFindResponseDTO> findMyUniverseTrainsByUserId(Long userId) throws IOException {
@@ -278,6 +283,12 @@ public class MyUniverseTrainService {
                         = postingInfoRepository.findByMyUniverseTrainId(myUniverseTrainId);
 
                 for(PostingInfo postingInfo : postingInfoList){
+
+                    // 각 postingInfo에 대한 likes 내역 삭제
+                    List<Likes> likesList = likesRepository.findByPostingInfoId(postingInfo.getId());
+
+                    likesRepository.deleteAll(likesList);
+
                     postingInfoRepository.deleteById(postingInfo.getId());
                 }
 
