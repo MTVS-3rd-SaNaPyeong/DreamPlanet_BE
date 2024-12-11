@@ -1,16 +1,20 @@
 package com.sanapyeong.mtvs_3rd_dreamplanet.inventory.services;
 
+import com.amazonaws.services.kms.model.NotFoundException;
 import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.dto.BlockInventoryFindResponseDTO;
 import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.dto.SaveInventoryDTO;
 import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.entities.Inventory;
 import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.repositories.InventoryRepository;
 import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.repositories.PostingInfoRepository;
+import com.sanapyeong.mtvs_3rd_dreamplanet.myUniverseTrain.entities.MyUniverseTrain;
+import com.sanapyeong.mtvs_3rd_dreamplanet.myUniverseTrain.repositories.MyUniverseTrainRepository;
 import com.sanapyeong.mtvs_3rd_dreamplanet.playedBlockPlanet.repositories.PlayedBlockPlanetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class InventoryService {
@@ -18,16 +22,18 @@ public class InventoryService {
     private final InventoryRepository inventoryRepository;
     private final PlayedBlockPlanetRepository playedBlockPlanetRepository;
     private final PostingInfoRepository postingInfoRepository;
+    private final MyUniverseTrainRepository myUniverseTrainRepository;
 
     @Autowired
     public InventoryService(
             InventoryRepository inventoryRepository,
             PlayedBlockPlanetRepository playedBlockPlanetRepository,
-            PostingInfoRepository postingInfoRepository
-    ) {
+            PostingInfoRepository postingInfoRepository,
+            MyUniverseTrainRepository myUniverseTrainRepository) {
         this.inventoryRepository = inventoryRepository;
         this.playedBlockPlanetRepository = playedBlockPlanetRepository;
         this.postingInfoRepository = postingInfoRepository;
+        this.myUniverseTrainRepository = myUniverseTrainRepository;
     }
 
     @Transactional
@@ -48,10 +54,16 @@ public class InventoryService {
             Long myUniverseTrainId
     ) {
 
-        return inventoryRepository.findBlockInventoryByUserIdAndMyUniverseTrainId(userId, myUniverseTrainId)
-                .stream()
-                .map(BlockInventoryFindResponseDTO::new)
-                .toList();
+        Optional<MyUniverseTrain> OptionalMyUniverseTrain = myUniverseTrainRepository.findById(myUniverseTrainId);
+
+        if (OptionalMyUniverseTrain.isPresent()) {
+            return inventoryRepository.findBlockInventoryByUserIdAndMyUniverseTrainId(userId, myUniverseTrainId)
+                    .stream()
+                    .map(BlockInventoryFindResponseDTO::new)
+                    .toList();
+        } else {
+            throw new NotFoundException("해당하는 나만의 우주열차가 없습니다.");
+        }
     }
 
     public Inventory findInventoryById(Long nextId) {
