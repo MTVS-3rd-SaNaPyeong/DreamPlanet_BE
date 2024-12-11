@@ -11,7 +11,7 @@ public interface InventoryRepository extends JpaRepository<Inventory, Long> {
 
     // PlanetType BLOCK_TYPE = PlanetType.BLOCK;
 
-    @Query("SELECT i.id, i.playedPlanetId, p.postedLocation, b.completedWork " +
+    @Query("SELECT i.id, i.playedPlanetId, p.postedLocation, b.completedWork, p.id, p.likesAmt " +
             "FROM Inventory i " +
                 "LEFT JOIN PlayedBlockPlanet b on i.playedPlanetId = b.id " +
                 "LEFT JOIN PostingInfo p on i.id = p.inventoryId AND p.myUniverseTrainId = :myUniverseTrainId " +
