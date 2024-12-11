@@ -23,4 +23,8 @@ public class Likes extends EntityTimestamp {
 
     private Long postingInfoId;
 
+    public Likes(Long userId, Long postingInfoId) {
+        this.userId = userId;
+        this.postingInfoId = postingInfoId;
+    }
 }
