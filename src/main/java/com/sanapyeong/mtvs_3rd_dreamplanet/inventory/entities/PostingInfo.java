@@ -25,9 +25,12 @@ public class PostingInfo extends EntityTimestamp {
 
     private Long postedLocation;
 
+    private Long likesAmt;
+
     public PostingInfo(Long inventoryId, Long myUniverseTrainId) {
         this.inventoryId = inventoryId;
         this.myUniverseTrainId = myUniverseTrainId;
         this.postedLocation = 0L;
+        this.likesAmt = 0L;
     }
 }
