@@ -97,7 +97,7 @@ public class MyUniverseTrainController {
     }
 
     @GetMapping("/my-universe-trains/{id}")
-    @Operation(summary="타인의 우주 열차로 이동", description = "다른 유저 우주 열차 조회 API")
+    @Operation(summary="우주 열차 상세 정보 조회", description = "우주 열차 상세 정보 조회 API")
     public ResponseEntity<?> findMyUniverseTrainByTrainId(
             @PathVariable Long id
     ){

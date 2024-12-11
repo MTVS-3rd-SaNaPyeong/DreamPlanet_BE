@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PostingInfoService {
@@ -61,5 +62,19 @@ public class PostingInfoService {
                 = postingInfoRepository.findByInventoryIdAndMyUniverseTrainId(inventoryId, myUniverseTrainId);
 
         postingInfo.setPostedLocation(postedLocation);
+    }
+
+    @Transactional
+    public void increaseLikesAmt(
+            Long postingInfoId
+    ){
+
+        Optional<PostingInfo> OptionalPostingInfo = postingInfoRepository.findById(postingInfoId);
+
+        if(OptionalPostingInfo.isPresent()){
+            PostingInfo postingInfo = OptionalPostingInfo.get();
+
+            postingInfo.setLikesAmt(postingInfo.getLikesAmt() + 1);
+        }
     }
 }

@@ -13,7 +13,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public class BlockInventoryFindResponseDTO {
 
     // inventory id
-    private Long id;
+    private Long inventoryId;
 
     // 작품이 만들어진 행성 번호
     private Long playedPlanetId;
@@ -25,10 +25,16 @@ public class BlockInventoryFindResponseDTO {
     // 완성 작품 URL
     private String completedWork;
 
+    // postingInfo id
+    private Long postingInfoId;
+
+    // likesAmt
+    private Long likesAmt;
+
     public BlockInventoryFindResponseDTO(Object[] result) {
 
         //inventoryId
-        this.id = (Long) result[0];
+        this.inventoryId = (Long) result[0];
 
         // playedPlanetId
         this.playedPlanetId = (Long) result[1];
@@ -38,6 +44,12 @@ public class BlockInventoryFindResponseDTO {
 
         // completedWork
         this.completedWork = (String) result[3];
+
+        // postingInfo id
+        this.postingInfoId = (Long) result[4];
+
+        // LikesAmt
+        this.likesAmt = (Long) result[5];
 
     }
 
