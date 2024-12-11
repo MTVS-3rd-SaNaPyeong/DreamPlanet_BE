@@ -1,5 +1,6 @@
 package com.sanapyeong.mtvs_3rd_dreamplanet.inventory.controller;
 
+import com.amazonaws.services.kms.model.NotFoundException;
 import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.dto.BlockInventoryFindResponseDTO;
 import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.dto.PostedLocationUpdateRequestDTO;
 import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.dto.SaveInventoryDTO;
@@ -69,8 +70,14 @@ public class InventoryController {
             return new ResponseEntity<>(responseMessage, headers, HttpStatus.UNAUTHORIZED);
         }
 
-        List<BlockInventoryFindResponseDTO> blockInventoryList
-                = findBlockInventoryByUserIdAndMyUniverseTrainId(userId, myUniverseTrainId);
+        List<BlockInventoryFindResponseDTO> blockInventoryList = null;
+
+        try {
+            blockInventoryList = findBlockInventoryByUserIdAndMyUniverseTrainId(userId, myUniverseTrainId);
+        } catch (NotFoundException e) {
+            ResponseMessage responseMessage = new ResponseMessage(404, e.getMessage(), responseMap);
+            return new ResponseEntity<>(responseMessage, headers, HttpStatus.NOT_FOUND);
+        }
 
         responseMap.put("blockInventory", blockInventoryList);
 
@@ -89,9 +96,9 @@ public class InventoryController {
         List<BlockInventoryFindResponseDTO> blockInventoryList;
 
         try {
-            blockInventoryList= inventoryService.findBlockInventoryByUserIdAndMyUniverseTrainId(userId, myUniverseTrainId);
-        } catch (Exception e) {
-            return null;
+            blockInventoryList = inventoryService.findBlockInventoryByUserIdAndMyUniverseTrainId(userId, myUniverseTrainId);
+        } catch (NotFoundException e) {
+            throw new NotFoundException(e.getMessage());
         }
 
         return blockInventoryList;
@@ -138,7 +145,9 @@ public class InventoryController {
     }
 
     @PatchMapping("/inventories")
-    @Operation(summary = "전시 작품 변경", description = "전시 작품 변경 API")
+    @Operation(summary = "전시 작품 변경",
+            description = "전시 작품 변경 API\n" +
+            "비어있던 공간이라면 prevPostingInfoId에 0을 넣어주세요.\n")
     public ResponseEntity<?> updatePostedLocation(
             @RequestBody PostedLocationUpdateRequestDTO postedLocationInfo,
             HttpServletRequest request
@@ -161,31 +170,37 @@ public class InventoryController {
         }
 
         // 변경 전 작품 ID와 변경하려는 작품 ID가 같은 경우
-        if(Objects.equals(postedLocationInfo.getPrevId(), postedLocationInfo.getNextId())){
+        if(Objects.equals(postedLocationInfo.getPrevPostingInfoId(), postedLocationInfo.getNextPostingInfoId())){
             ResponseMessage responseMessage = new ResponseMessage(200, "변경 내용 없음", responseMap);
             return new ResponseEntity<>(responseMessage, headers, HttpStatus.OK);
-        }else if(postedLocationInfo.getPrevId() == 0L){
+        }else if(postedLocationInfo.getPrevPostingInfoId() == 0L){
             //변경하려는 작품의 위치가 비어있는 경우
 
-            Inventory inventory =
-                    inventoryService.findInventoryById(postedLocationInfo.getNextId());
+//            Inventory inventory =
+//                    inventoryService.findInventoryById(postedLocationInfo.getNextId());
+//
+//            //inventoryService.updatePostedLocation(inventory.getId(), postedLocationInfo.getPostedLocation());
+//
+//            postingInfoService.updatePostingInfo(inventory.getId(), postedLocationInfo.getMyUniverseTrainId(), postedLocationInfo.getPostedLocation());
 
-            //inventoryService.updatePostedLocation(inventory.getId(), postedLocationInfo.getPostedLocation());
-
-            postingInfoService.updatePostingInfo(inventory.getId(), postedLocationInfo.getMyUniverseTrainId(), postedLocationInfo.getPostedLocation());
+            postingInfoService.updatePostingInfo(postedLocationInfo.getNextPostingInfoId(), postedLocationInfo.getPostedLocation());
 
         }else{
             // 변경하려는 작품의 위치가 차있고, 이전 작품과 이후 작품이 다른 경우
 
-            Inventory prevInventory =
-                    inventoryService.findInventoryById(postedLocationInfo.getPrevId());
+//            Inventory prevInventory =
+//                    inventoryService.findInventoryById(postedLocationInfo.getPrevId());
+//
+//            Inventory nextInventory =
+//                    inventoryService.findInventoryById(postedLocationInfo.getNextId());
+//
+//            postingInfoService.updatePostingInfo(prevInventory.getId(), postedLocationInfo.getMyUniverseTrainId(), 0L);
+//
+//            postingInfoService.updatePostingInfo(nextInventory.getId(), postedLocationInfo.getMyUniverseTrainId(), postedLocationInfo.getPostedLocation());
 
-            Inventory nextInventory =
-                    inventoryService.findInventoryById(postedLocationInfo.getNextId());
+            postingInfoService.updatePostingInfo(postedLocationInfo.getPrevPostingInfoId(), 0L);
 
-            postingInfoService.updatePostingInfo(prevInventory.getId(), postedLocationInfo.getMyUniverseTrainId(), 0L);
-
-            postingInfoService.updatePostingInfo(nextInventory.getId(), postedLocationInfo.getMyUniverseTrainId(), postedLocationInfo.getPostedLocation());
+            postingInfoService.updatePostingInfo(postedLocationInfo.getNextPostingInfoId(), postedLocationInfo.getPostedLocation());
 
         }
 

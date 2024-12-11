@@ -1,5 +1,6 @@
 package com.sanapyeong.mtvs_3rd_dreamplanet.inventory.services;
 
+import com.amazonaws.services.kms.model.NotFoundException;
 import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.entities.Inventory;
 import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.entities.PostingInfo;
 import com.sanapyeong.mtvs_3rd_dreamplanet.inventory.repositories.InventoryRepository;
@@ -51,17 +52,36 @@ public class PostingInfoService {
         }
     }
 
+//    @Transactional
+//    public void updatePostingInfo(
+//            Long inventoryId,
+//            Long myUniverseTrainId,
+//            Long postedLocation
+//    ){
+//
+//        PostingInfo postingInfo
+//                = postingInfoRepository.findByInventoryIdAndMyUniverseTrainId(inventoryId, myUniverseTrainId);
+//
+//        postingInfo.setPostedLocation(postedLocation);
+//    }
+
     @Transactional
     public void updatePostingInfo(
-            Long inventoryId,
-            Long myUniverseTrainId,
+            Long postingInfoId,
             Long postedLocation
     ){
 
-        PostingInfo postingInfo
-                = postingInfoRepository.findByInventoryIdAndMyUniverseTrainId(inventoryId, myUniverseTrainId);
+        Optional<PostingInfo> optionalPostingInfo = postingInfoRepository.findById(postingInfoId);
 
-        postingInfo.setPostedLocation(postedLocation);
+        if(optionalPostingInfo.isPresent()){
+
+            PostingInfo postingInfo = optionalPostingInfo.get();
+
+            postingInfo.setPostedLocation(postedLocation);
+
+        } else{
+            throw new NotFoundException("PostingInfo 정보가 존재하지 않습니다.");
+        }
     }
 
     @Transactional

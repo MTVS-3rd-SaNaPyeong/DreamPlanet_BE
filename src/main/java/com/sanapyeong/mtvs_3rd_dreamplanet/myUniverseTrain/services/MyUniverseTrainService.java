@@ -84,31 +84,37 @@ public class MyUniverseTrainService {
         return foundList;
     }
 
-    public MyUniverseTrainFindResponseDTO findById(Long id) throws IOException{
+    public MyUniverseTrainFindResponseDTO findById(Long id){
 
         Optional<MyUniverseTrain> optionalMyUniverseTrain
                 = myUniverseTrainRepository.findById(id);
 
-        MyUniverseTrain myUniverseTrain = optionalMyUniverseTrain.get();
+        if (optionalMyUniverseTrain.isPresent()) {
 
-        List<BlockInventoryFindResponseDTO> blockTrainInfo
-                = inventoryRepository.findBlockInventoryByUserIdAndMyUniverseTrainId(myUniverseTrain.getUserId(), myUniverseTrain.getId())
-                .stream()
-                .map(BlockInventoryFindResponseDTO::new)
-                .toList();
+            MyUniverseTrain myUniverseTrain = optionalMyUniverseTrain.get();
 
-        MyUniverseTrainFindResponseDTO findResult
-                = new MyUniverseTrainFindResponseDTO(
-                myUniverseTrain.getId(),
-                myUniverseTrain.getTrainColor(),
-                myUniverseTrain.getTrainName(),
-                myUniverseTrain.getUniqueCode(),
-                myUniverseTrain.getPlanetStatus(),
-                myUniverseTrain.getPlanetOrder(),
-                blockTrainInfo
-        );
+            List<BlockInventoryFindResponseDTO> blockTrainInfo
+                    = inventoryRepository.findBlockInventoryByUserIdAndMyUniverseTrainId(myUniverseTrain.getUserId(), myUniverseTrain.getId())
+                    .stream()
+                    .map(BlockInventoryFindResponseDTO::new)
+                    .toList();
 
-        return findResult;
+            MyUniverseTrainFindResponseDTO findResult
+                    = new MyUniverseTrainFindResponseDTO(
+                    myUniverseTrain.getId(),
+                    myUniverseTrain.getTrainColor(),
+                    myUniverseTrain.getTrainName(),
+                    myUniverseTrain.getUniqueCode(),
+                    myUniverseTrain.getPlanetStatus(),
+                    myUniverseTrain.getPlanetOrder(),
+                    blockTrainInfo
+            );
+
+            return findResult;
+
+        } else {
+            throw new NotFoundException("해당하는 나만의 우주열차가 없습니다.");
+        }
     }
 
     @Transactional
